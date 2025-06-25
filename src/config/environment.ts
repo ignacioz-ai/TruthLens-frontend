@@ -8,14 +8,15 @@ export const ENV_CONFIG = {
     PRODUCTION: {
       API: 'truthlens-backend-production-b9e0.up.railway.app',
       FRONTEND: 'https://truthlens-ai.app',
-      GITHUB: 'https://github.com/ignacioz-ai',
+      DOCS: 'https://truthlens-backend-production.up.railway.app/docs',
+      GITHUB: 'https://github.com/ignacioai/truthlens',
       BOLT: 'https://bolt.new'
     },
     DEVELOPMENT: {
       API: 'http://localhost:8000',
       FRONTEND: 'http://localhost:5173',
       DOCS: 'http://localhost:8000/docs',
-      GITHUB: 'https://github.com/ignacioz-ai',
+      GITHUB: 'https://github.com/ignaciozai/truthlens',
       BOLT: 'https://bolt.new'
     }
   },
