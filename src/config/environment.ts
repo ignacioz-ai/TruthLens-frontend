@@ -15,7 +15,7 @@ export const ENV_CONFIG = {
       API: 'http://localhost:8000',
       FRONTEND: 'http://localhost:5173',
       DOCS: 'http://localhost:8000/docs',
-      GITHUB: 'https://github.com/ignaciozuniga/truthlens',
+      GITHUB: 'https://github.com/ignacioz-ai',
       BOLT: 'https://bolt.new'
     }
   },
