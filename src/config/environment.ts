@@ -6,9 +6,9 @@ export const ENV_CONFIG = {
   // URLs
   URLS: {
     PRODUCTION: {
-      API: 'truthlens-backend-production-b9e0.up.railway.app',
-      FRONTEND: 'https://truthlensai.netlify.app/',
-      DOCS: 'https://truthlens-backend-production.up.railway.app/docs',
+      API: 'https://truthlens-backend-production-b9e0.up.railway.app',
+      FRONTEND: 'https://glowing-mooncake-e6a9e1.netlify.app',
+      DOCS: 'https://truthlens-backend-production-b9e0.up.railway.app/docs',
       GITHUB: 'https://github.com/ignacioai/truthlens',
       BOLT: 'https://bolt.new'
     },
@@ -74,4 +74,4 @@ export const getBoltUrl = (): string => {
 };
 
 export const isDevelopment = (): boolean => ENV_CONFIG.ENV === 'development';
-export const isProduction = (): boolean => ENV_CONFIG.ENV === 'production'; 
+export const isProduction = (): boolean => ENV_CONFIG.ENV === 'production';
