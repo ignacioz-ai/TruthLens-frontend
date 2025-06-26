@@ -38,15 +38,35 @@ const isMobile = ref(false)
 const isApiHealthy = ref(true)
 const retryCount = ref(0)
 
+// Store original body overflow to restore it later
+const originalBodyOverflow = ref('')
+
 // Check if device is mobile
 const checkMobile = () => {
   isMobile.value = checkMobileConfig()
+}
+
+// Scroll lock management
+const lockScroll = () => {
+  if (isMobile.value && !props.standalone) {
+    originalBodyOverflow.value = document.body.style.overflow || ''
+    document.body.style.overflow = 'hidden'
+  }
+}
+
+const unlockScroll = () => {
+  if (isMobile.value && !props.standalone) {
+    document.body.style.overflow = originalBodyOverflow.value
+  }
 }
 
 // Lifecycle hooks
 onMounted(async () => {
   checkMobile()
   window.addEventListener('resize', checkMobile)
+  
+  // Store original overflow value
+  originalBodyOverflow.value = document.body.style.overflow || ''
   
   // Check API health
   isApiHealthy.value = await checkApiHealth()
@@ -60,6 +80,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
+  // Always restore scroll when component unmounts
+  unlockScroll()
 })
 
 // Computed
@@ -72,17 +94,13 @@ const chatContainerClass = computed(() => ({
 const toggleChat = () => {
   isOpen.value = !isOpen.value
   if (isOpen.value) {
+    lockScroll()
     nextTick(() => {
       handleInputFocus()
-      // Prevent body scroll when chat is open on mobile
-      if (isMobile.value) {
-        document.body.style.overflow = 'hidden'
-      }
     })
   } else {
+    unlockScroll()
     emit('close')
-    // Restore body scroll
-    document.body.style.overflow = ''
   }
 }
 
@@ -266,6 +284,17 @@ watch(messages, () => {
     scrollToBottom()
   })
 }, { deep: true })
+
+// Watch for mobile state changes to handle scroll lock
+watch(isMobile, (newIsMobile) => {
+  if (!newIsMobile && isOpen.value) {
+    // If switching from mobile to desktop while chat is open, unlock scroll
+    unlockScroll()
+  } else if (newIsMobile && isOpen.value) {
+    // If switching from desktop to mobile while chat is open, lock scroll
+    lockScroll()
+  }
+})
 
 // Animation methods
 const onEnter = (el) => {
@@ -732,7 +761,7 @@ button:active {
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
-  /* Chat window ocupa toda la pantalla - ELIMINAR */
+  /* Chat window ocupa toda la pantalla */
   .w-full.h-full.md\:w-\[450px\].md\:h-\[600px\].md\:bottom-8.md\:right-8.md\:fixed {
     width: 100vw !important;
     max-width: 100vw !important;
@@ -749,7 +778,7 @@ button:active {
     z-index: 1050 !important;
   }
 
-  /* Contenedor principal ocupa toda la pantalla y z-index alto - ELIMINAR */
+  /* Contenedor principal ocupa toda la pantalla y z-index alto */
   .fixed.bottom-4.z-10,
   .fixed.bottom-4.right-4.z-30 {
     width: 100vw !important;
@@ -1338,4 +1367,4 @@ input {
 .chat-icon {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
-</style> 
+</style>
