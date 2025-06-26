@@ -39,7 +39,7 @@
                         <!-- Frames Section -->
                         <div class="mb-2">
                             <div class="text-lg text-blue-300 font-semibold mb-1">Frames</div>
-                            <div v-if="block.frames_detected && block.frames_detected.length && !(block.frames_detected.length === 1 && block.frames_detected[0] === 'none')" class="flex flex-wrap gap-1">
+                            <div v-if="block.frames_detected && block.frames_detected.length && !(block.frames_detected.length === 1 && block.frames_detected[0] === 'none')" class="frames-chips">
                                 <span v-for="frame in block.frames_detected" :key="frame" class="px-2 py-0.5 rounded-full bg-cyan-700/70 text-cyan-100 text-xs font-semibold capitalize cursor-pointer" :title="frameDescriptions[frame] || 'Detected narrative frame'">{{ frame.replace('_', ' ') }}</span>
                             </div>
                             <div v-else-if="block.frames_detected && block.frames_detected.length === 1 && block.frames_detected[0] === 'none'" class="text-xs text-blue-300/80 italic">
@@ -56,45 +56,6 @@
                             </span>
                         </div>
                         
-
-                        <!-- Narrative style heatmap bar -->
-                        <div class="flex flex-col gap-2 mb-4">
-                            <div class="flex h-4 w-full rounded-full overflow-hidden bg-slate-900/20 backdrop-blur-sm border border-white/5
-                                      group/heatmap hover:border-white/10 transition-all duration-300">
-                                <div
-                                    v-for="(value, style, index) in block.style_distribution"
-                                    :key="style"
-                                    :style="{ 
-                                        width: (value * 100) + '%',
-                                        marginLeft: index === 0 ? '0' : '-1px'
-                                    }"
-                                    :class="[
-                                        styleColorClass(style),
-                                        'transition-all duration-500 ease-in-out relative group/segment'
-                                    ]"
-                                    class="h-full">
-                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent 
-                                              opacity-0 group-hover/segment:opacity-100 transition-opacity duration-300"></div>
-                                    <div class="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
-                                </div>
-                            </div>
-                            <!-- Debug info for style distribution -->
-                            <div class="flex justify-between text-xs text-slate-400/80">
-                                <div v-for="(value, style) in block.style_distribution" 
-                                    :key="style"
-                                    class="flex items-center gap-1.5 group/indicator"
-                                >
-                                    <div class="w-2 h-2 rounded-full transition-all duration-300 
-                                              group-hover/indicator:scale-125 group-hover/indicator:ring-2"
-                                        :class="[styleColorClass(style), 'ring-1 ring-white/10']"
-                                    />
-                                    <span class="transition-all duration-300 group-hover/indicator:text-white/90 
-                                               group-hover/indicator:translate-x-0.5">
-                                        {{ style }}: {{ (value * 100).toFixed(0) }}%
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
                         <hr class="my-3 border-blue-900/20">
                         <!-- Analysis details for article type and sentiments -->
                         <AnalysisDetails 
@@ -151,14 +112,6 @@ function getDominantStyle(distribution: StyleDistribution): string {
     return Object.entries(distribution).reduce((max, [style, value]) => 
         value > distribution[max as keyof StyleDistribution] ? style : max
     , Object.keys(distribution)[0])
-}
-
-function styleColorClass(style: string): string {
-    return `bg-gradient-to-r ${style === 'objective' ? 'from-green-400 to-green-600' :
-                                style === 'subjective' ? 'from-yellow-400 to-yellow-600' :
-                                style === 'speculative' ? 'from-orange-400 to-orange-600' :
-                                style === 'emotive' ? 'from-red-400 to-red-600' :
-                                style === 'clickbait' ? 'from-purple-400 to-purple-600' : 'from-slate-400 to-slate-600'}`
 }
 
 const frameDescriptions: Record<string, string> = {
@@ -233,5 +186,19 @@ const frameDescriptions: Record<string, string> = {
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Frames chips responsive layout */
+.frames-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+@media (max-width: 640px) {
+  .frames-chips {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
 }
 </style> 
