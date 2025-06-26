@@ -1,7 +1,7 @@
 <template>
     <!-- Main container for analysis visualization blocks -->
     <div class="space-y-4 text-white group">
-        <div class="mt-6 p-4 sm:p-6 rounded-xl bg-slate-900/95 backdrop-blur-sm border border-white/10 
+        <div class="mt-6 p-6 rounded-xl bg-slate-900/95 backdrop-blur-sm border border-white/10 
                     shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.3),inset_0_0_0_1px_rgba(255,255,255,0.1)]
                     text-white space-y-3 relative group">
             <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-xl pointer-events-none"></div>
@@ -15,34 +15,32 @@
                 >
                     <div v-for="(block, index) in props.blocks" :key="index" 
                         :class="[
-                            'p-3 sm:p-4 rounded-lg border border-white/5 backdrop-blur-sm transition-all duration-300 ease-in-out',
+                            'p-4 rounded-lg border border-white/5 backdrop-blur-sm transition-all duration-300 ease-in-out',
                             'hover:scale-[1.01] hover:border-white/10 hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.15)]',
                             'group/block relative',
                             'bg-slate-900/95 text-white'
                         ]" 
                         :style="{ animationDelay: `${index * 100}ms` }">
                         
-                        <!-- DOCA Content & Framing Analysis Header -->
-                        <div class="mb-3 flex flex-col sm:flex-row sm:items-center gap-2">
-                            <span class="text-base sm:text-lg text-blue-300 font-semibold">Content & Framing Analysis</span>
-                            <span class="px-2 py-0.5 rounded-full bg-blue-800/80 text-blue-100 text-xs font-bold tracking-wide cursor-pointer w-fit" title="DOCA (Database of Variables for Content Analysis) identifies the main topic (what the article is about) and the narrative frames (how the topic is presented: e.g., as a crisis, conflict, or solution). Frames help reveal the perspectives or angles emphasized by the article. If no frames are detected, the article is presented in a neutral or unframed way.">DOCA</span>
+                        <!-- DOCA Content & Framing Analysis Header (badge at end, tooltip on badge, no info icon) -->
+                        <div class="mb-3 flex items-center gap-2">
+                            <span class="text-lg text-blue-300 font-semibold">Content & Framing Analysis</span>
+                            <span class="px-2 py-0.5 rounded-full bg-blue-800/80 text-blue-100 text-xs font-bold tracking-wide cursor-pointer" title="DOCA (Database of Variables for Content Analysis) identifies the main topic (what the article is about) and the narrative frames (how the topic is presented: e.g., as a crisis, conflict, or solution). Frames help reveal the perspectives or angles emphasized by the article. If no frames are detected, the article is presented in a neutral or unframed way.">DOCA</span>
                         </div>
                         <hr class="my-3 border-blue-900/40">
-                        
                         <!-- Topic Section -->
                         <div class="mb-2">
-                            <div class="text-base sm:text-lg text-blue-300 font-semibold mb-1">Topic</div>
+                            <div class="text-lg text-blue-300 font-semibold mb-1">Topic</div>
                             <div v-if="block.topic" class="flex items-center gap-2">
-                                <span class="text-blue-200 text-sm font-medium break-words">{{ block.topic }}</span>
+                                <span class="text-blue-200 text-sm font-medium">{{ block.topic }}</span>
                             </div>
                         </div>
                         <hr class="my-3 border-blue-900/20">
-                        
                         <!-- Frames Section -->
                         <div class="mb-2">
-                            <div class="text-base sm:text-lg text-blue-300 font-semibold mb-1">Frames</div>
+                            <div class="text-lg text-blue-300 font-semibold mb-1">Frames</div>
                             <div v-if="block.frames_detected && block.frames_detected.length && !(block.frames_detected.length === 1 && block.frames_detected[0] === 'none')" class="flex flex-wrap gap-1">
-                                <span v-for="frame in block.frames_detected" :key="frame" class="px-2 py-0.5 rounded-full bg-cyan-700/70 text-cyan-100 text-xs font-semibold capitalize cursor-pointer break-words" :title="frameDescriptions[frame] || 'Detected narrative frame'">{{ frame.replace('_', ' ') }}</span>
+                                <span v-for="frame in block.frames_detected" :key="frame" class="px-2 py-0.5 rounded-full bg-cyan-700/70 text-cyan-100 text-xs font-semibold capitalize cursor-pointer" :title="frameDescriptions[frame] || 'Detected narrative frame'">{{ frame.replace('_', ' ') }}</span>
                             </div>
                             <div v-else-if="block.frames_detected && block.frames_detected.length === 1 && block.frames_detected[0] === 'none'" class="text-xs text-blue-300/80 italic">
                                 No prominent framing strategies were detected in this article.
@@ -51,9 +49,9 @@
                         <hr class="my-3 border-blue-900/20">
 
                         <!-- Bias Type Header -->
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-2 group/bias">
-                            <span class="text-base sm:text-lg font-semibold text-blue-300 transition-colors duration-300 group-hover/bias:text-blue-200">Predominant Style:</span>
-                            <span class="text-white/90 transition-all duration-300 group-hover/bias:text-white group-hover/bias:translate-x-1 break-words">
+                        <div class="flex items-center gap-2 mb-2 group/bias">
+                            <span class="text-lg font-semibold text-blue-300 transition-colors duration-300 group-hover/bias:text-blue-200">Predominant Style:</span>
+                            <span class="text-white/90 transition-all duration-300 group-hover/bias:text-white group-hover/bias:translate-x-1">
                                 {{ getDominantStyle(block.style_distribution) }}
                             </span>
                         </div>
@@ -80,25 +78,24 @@
                                     <div class="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
                                 </div>
                             </div>
-                            <!-- Style distribution indicators - responsive grid -->
-                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 text-xs text-slate-400/80">
+                            <!-- Debug info for style distribution -->
+                            <div class="flex justify-between text-xs text-slate-400/80">
                                 <div v-for="(value, style) in block.style_distribution" 
                                     :key="style"
                                     class="flex items-center gap-1.5 group/indicator"
                                 >
                                     <div class="w-2 h-2 rounded-full transition-all duration-300 
-                                              group-hover/indicator:scale-125 group-hover/indicator:ring-2 flex-shrink-0"
+                                              group-hover/indicator:scale-125 group-hover/indicator:ring-2"
                                         :class="[styleColorClass(style), 'ring-1 ring-white/10']"
                                     />
                                     <span class="transition-all duration-300 group-hover/indicator:text-white/90 
-                                               group-hover/indicator:translate-x-0.5 truncate">
+                                               group-hover/indicator:translate-x-0.5">
                                         {{ style }}: {{ (value * 100).toFixed(0) }}%
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <hr class="my-3 border-blue-900/20">
-                        
                         <!-- Analysis details for article type and sentiments -->
                         <AnalysisDetails 
                             :article-type="block.article_type"
@@ -237,27 +234,4 @@ const frameDescriptions: Record<string, string> = {
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-
-/* Mobile-specific improvements */
-@media (max-width: 640px) {
-  .space-y-4 > * + * {
-    margin-top: 1rem;
-  }
-  
-  .mb-3 {
-    margin-bottom: 0.75rem;
-  }
-  
-  .gap-2 {
-    gap: 0.5rem;
-  }
-  
-  .text-base {
-    font-size: 0.875rem;
-  }
-  
-  .text-lg {
-    font-size: 1rem;
-  }
-}
-</style>
+</style> 
