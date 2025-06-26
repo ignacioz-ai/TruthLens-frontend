@@ -3,6 +3,10 @@ import { ref } from 'vue';
 import Card from '../components/Card.vue';
 import { getApiUrl } from '../config/api';
 import ChatBot from '../components/ChatBot.vue';
+import { useMobileDetection } from '../composables/useMobileDetection';
+
+// Mobile detection for ChatBot visibility
+const { isMobile } = useMobileDetection();
 
 interface AnalysisResults {
   ai_probability: number;
@@ -191,7 +195,8 @@ const getVerdictColorClass = (verdict: string) => {
         <p class="text-slate-200 text-base">The tool provides a confidence score and a transparent breakdown of authenticity risks.</p>
       </div>
     </div>
-    <ChatBot />
+    
+    <ChatBot v-if="!isMobile" />
   </div>
 </template>
 

@@ -6,9 +6,13 @@ import Tooltip from '../components/Tooltip.vue';
 import ChatBot from '../components/ChatBot.vue';
 import { getApiUrl, API_BASE_URL } from '../config/api';
 import { useAudioOptimization } from '../composables/useAudioOptimization';
+import { useMobileDetection } from '../composables/useMobileDetection';
 
 // Audio optimization
 const { isMobile, resumeAudioContext } = useAudioOptimization();
+
+// Mobile detection for ChatBot visibility
+const { isMobile: isMobileDevice } = useMobileDetection();
 
 const sourceText = ref('');
 const translatedText = ref('');
@@ -559,8 +563,11 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
+    
     <!-- ChatBot assistant at the bottom -->
-    <ChatBot />
+    <ChatBot v-if="!isMobileDevice" />
+    
+    <!-- Tarjeta informativa del Translator -->
     <div class="mt-8 sm:mt-12 max-w-2xl mx-auto px-4 sm:px-0">
       <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 rounded-2xl shadow-xl border border-cyan-400/20 p-6 sm:p-8 mb-8 flex flex-col items-start">
         <div class="flex items-center mb-4">

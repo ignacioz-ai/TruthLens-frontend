@@ -2,10 +2,14 @@
 import AnalysisForm from '../components/AnalysisForm.vue';
 import ChatBot from '../components/ChatBot.vue';
 import { useAnalysis } from '../composables/useAnalysis';
+import { useMobileDetection } from '../composables/useMobileDetection';
 import { ref } from 'vue';
 
 const { result, analyzeContent } = useAnalysis();
 const currentArticleText = ref('');
+
+// Mobile detection for ChatBot visibility
+const { isMobile } = useMobileDetection();
 
 async function handleAnalyze(text: string) {
   currentArticleText.value = text;
@@ -47,6 +51,7 @@ async function handleAnalyze(text: string) {
   </div>
 
   <ChatBot 
+    v-if="!isMobile"
     :article-text="currentArticleText"
     :analysis-result="result"
   />

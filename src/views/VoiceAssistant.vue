@@ -13,7 +13,7 @@
       
       <!-- Mobile permission message -->
       <transition name="fade-scale" appear>
-        <div v-if="!hasPermissions && isMobile" class="permission-message">
+        <div v-if="!hasPermissions && isMobileAudio" class="permission-message">
           <div class="permission-card">
             <svg class="permission-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -38,7 +38,7 @@
               <rect x="11" y="5" width="2" height="14" rx="1" fill="#60a5fa"/>
               <rect x="15" y="8" width="2" height="8" rx="1" fill="#60a5fa"/>
             </svg>
-            {{ isMobile ? 'Tap to Talk' : 'Call Clara' }}
+            {{ isMobileAudio ? 'Tap to Talk' : 'Call Clara' }}
           </div>
           
           <!-- Animated Background Disc -->
@@ -75,8 +75,8 @@
       <transition name="state-fade-slide" mode="out-in">
         <div v-if="isListening || isSpeaking || isConnecting" class="voice-state-label" key="state-label">
           <span v-if="isConnecting">Connecting...</span>
-          <span v-else-if="isListening">{{ isMobile ? 'Listening...' : 'Listening' }}</span>
-          <span v-else-if="isSpeaking">{{ isMobile ? 'Clara is responding...' : 'Responding' }}</span>
+          <span v-else-if="isListening">{{ isMobileAudio ? 'Listening...' : 'Listening' }}</span>
+          <span v-else-if="isSpeaking">{{ isMobileAudio ? 'Clara is responding...' : 'Responding' }}</span>
         </div>
       </transition>
 
@@ -90,18 +90,10 @@
 
       <!-- Mobile instructions -->
       <transition name="fade-scale" appear>
-        <div v-if="isMobile && hasPermissions" class="mobile-instructions">
+        <div v-if="isMobileAudio && hasPermissions" class="mobile-instructions">
           <p>{{ isAlwaysListening ? 'Tap again to end conversation' : 'Tap and hold to speak with Clara' }}</p>
         </div>
       </transition>
-      
-      <!-- Mobile optimization indicator -->
-      <div v-if="isMobile" class="mobile-optimization-indicator">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-        <span>Mobile Optimized</span>
-      </div>
     </div>
     
     <!-- Tarjeta informativa de Clara -->
@@ -124,7 +116,7 @@
     </div>
     
     <!-- ChatBot assistant at the bottom -->
-    <ChatBot />
+    <ChatBot v-if="!isMobileDevice" />
   </div>
 </template>
 
@@ -135,9 +127,13 @@ import speakStartSound from '../assets/sounds/speak_start.mp3';
 import ChatBot from '../components/ChatBot.vue';
 import { Conversation } from '@elevenlabs/client';
 import { useAudioOptimization } from '../composables/useAudioOptimization';
+import { useMobileDetection } from '../composables/useMobileDetection';
 
 // Audio optimization
-const { isMobile, getMobileAudioConstraints, playAudio, resumeAudioContext } = useAudioOptimization();
+const { isMobile: isMobileAudio, getMobileAudioConstraints, playAudio, resumeAudioContext } = useAudioOptimization();
+
+// Mobile detection for ChatBot visibility
+const { isMobile: isMobileDevice } = useMobileDetection();
 
 // State management
 const isActive = ref(false);
@@ -148,7 +144,6 @@ const hasError = ref(false);
 const statusMessage = ref('');
 const isAlwaysListening = ref(false);
 const hasPermissions = ref(false);
-const isMobile = ref(false);
 
 // ElevenLabs configuration
 const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
@@ -159,17 +154,6 @@ let conversation: Conversation | null = null;
 let touchStartTime = 0;
 let touchTimer: number | null = null;
 
-// Detect mobile device
-const detectMobile = () => {
-  const userAgent = navigator.userAgent.toLowerCase();
-  const mobileKeywords = ['android', 'iphone', 'ipad', 'ipod', 'windows phone', 'mobile'];
-  const isMobileByUA = mobileKeywords.some(keyword => userAgent.includes(keyword));
-  const isMobileByScreen = window.innerWidth <= 768;
-  const hasTouch = 'ontouchstart' in window;
-  
-  isMobile.value = isMobileByUA || isMobileByScreen || hasTouch;
-};
-
 // Computed properties
 const getButtonLabel = () => {
   if (!hasPermissions.value) return 'Enable microphone to chat with Clara';
@@ -177,20 +161,14 @@ const getButtonLabel = () => {
   if (isAlwaysListening.value) return 'End conversation with Clara';
   if (isListening.value) return 'Clara is listening...';
   if (isSpeaking.value) return 'Clara is responding';
-  return isMobile.value ? 'Tap to talk with Clara' : 'Click to start conversation with Clara';
+  return isMobileAudio ? 'Tap to talk with Clara' : 'Click to start conversation with Clara';
 };
 
 // Request microphone permissions
 const requestPermissions = async (): Promise<boolean> => {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ 
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-        sampleRate: 44100
-      } 
-    });
+    const audioConstraints = getMobileAudioConstraints();
+    const stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
     hasPermissions.value = true;
     stream.getTracks().forEach(track => track.stop());
     return true;
@@ -208,21 +186,13 @@ const initializeVoice = async (): Promise<boolean> => {
       throw new Error('Missing ElevenLabs API key or Agent ID');
     }
 
-<<<<<<< HEAD
     // Resume audio context for mobile
     await resumeAudioContext();
 
-    // Request microphone permissions with mobile-optimized settings
-    const audioConstraints = getMobileAudioConstraints();
-    const stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
-    hasPermissions.value = true;
-    stream.getTracks().forEach(track => track.stop()); // Stop the stream after getting permissions
-=======
     if (!hasPermissions.value) {
       const granted = await requestPermissions();
       if (!granted) return false;
     }
->>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
 
     isConnecting.value = true;
 
@@ -237,10 +207,10 @@ const initializeVoice = async (): Promise<boolean> => {
         hasError.value = false;
         
         // Play connection sound
-        if (isMobile.value) {
-          playSound(listenStartSound, 0.3);
+        if (isMobileAudio) {
+          playAudio(listenStartSound, { volume: 0.3 });
         } else {
-          playSound(listenStartSound, 0.5);
+          playAudio(listenStartSound, { volume: 0.5 });
         }
       },
       onDisconnect: () => {
@@ -260,15 +230,9 @@ const initializeVoice = async (): Promise<boolean> => {
         if (mode.mode === 'speaking') {
           isSpeaking.value = true;
           isListening.value = false;
-<<<<<<< HEAD
           // Play speak start sound with mobile optimization
-          playAudio(speakStartSound, { volume: isMobile.value ? 0.8 : 0.5 });
-        } else {
-=======
-          // Play speak start sound with lower volume on mobile
-          playSound(speakStartSound, isMobile.value ? 0.3 : 0.5);
+          playAudio(speakStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
         } else if (mode.mode === 'listening') {
->>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
           isSpeaking.value = false;
           if (isAlwaysListening.value) {
             isListening.value = true;
@@ -357,13 +321,13 @@ const handleTouchEnd = async (e: TouchEvent) => {
 
 // Mouse event handlers for desktop
 const handleMouseDown = () => {
-  if (!isMobile.value && !isAlwaysListening.value && !isConnecting.value && hasPermissions.value) {
+  if (!isMobileAudio && !isAlwaysListening.value && !isConnecting.value && hasPermissions.value) {
     isActive.value = true;
   }
 };
 
 const handleMouseUp = async () => {
-  if (!isMobile.value && !isAlwaysListening.value && !isConnecting.value && isActive.value && conversation) {
+  if (!isMobileAudio && !isAlwaysListening.value && !isConnecting.value && isActive.value && conversation) {
     isActive.value = false;
     await conversation.endSession();
     conversation = null;
@@ -393,7 +357,6 @@ const resetError = () => {
 
 // Lifecycle hooks
 onMounted(async () => {
-<<<<<<< HEAD
   try {
     // Resume audio context for mobile
     await resumeAudioContext();
@@ -406,22 +369,10 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error checking microphone permissions:', error);
     hasPermissions.value = false;
-=======
-  detectMobile();
-  window.addEventListener('resize', detectMobile);
-  window.addEventListener('orientationchange', detectMobile);
-  
-  // Auto-request permissions on desktop
-  if (!isMobile.value) {
-    await requestPermissions();
->>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
   }
 });
 
 onUnmounted(async () => {
-  window.removeEventListener('resize', detectMobile);
-  window.removeEventListener('orientationchange', detectMobile);
-  
   if (touchTimer) {
     clearTimeout(touchTimer);
   }
@@ -432,46 +383,17 @@ onUnmounted(async () => {
   }
 });
 
-<<<<<<< HEAD
 // Watch to play sounds when state changes
 watch(isListening, (newVal, oldVal) => {
   console.log('isListening changed:', oldVal, '->', newVal);
-  if (newVal && !oldVal) {
-    playAudio(listenStartSound);
-=======
-// Function to play sounds with volume control
-const playSound = (src: string, volume: number = 0.5) => {
-  try {
-    const audio = new Audio(src);
-    audio.volume = Math.min(Math.max(volume, 0), 1); // Clamp between 0 and 1
-    
-    // Handle mobile audio playback restrictions
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(error => {
-        console.warn('Audio playback failed:', error);
-      });
-    }
-  } catch (error) {
-    console.warn('Error playing sound:', error);
-  }
-};
-
-// Watch to play sounds when state changes
-watch(isListening, (newVal, oldVal) => {
   if (newVal && !oldVal && !isConnecting.value) {
-    playSound(listenStartSound, isMobile.value ? 0.3 : 0.5);
->>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
+    playAudio(listenStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
   }
 });
 
 watch(isSpeaking, (newVal, oldVal) => {
   if (newVal && !oldVal) {
-<<<<<<< HEAD
-    playAudio(speakStartSound);
-=======
-    playSound(speakStartSound, isMobile.value ? 0.3 : 0.5);
->>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
+    playAudio(speakStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
   }
 });
 </script>
@@ -506,121 +428,6 @@ watch(isSpeaking, (newVal, oldVal) => {
   justify-content: center;
   max-width: 90vw;
   max-height: 90vw;
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .voice-button-wrapper {
-    width: 280px;
-    height: 280px;
-  }
-  
-  .voice-button {
-    width: 200px !important;
-    height: 200px !important;
-  }
-  
-  .voice-button::before {
-    width: 90px !important;
-    height: 90px !important;
-  }
-}
-
-/* Permission message */
-.permission-message {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.permission-card {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border: 2px solid #3b82f6;
-  border-radius: 1rem;
-  padding: 2rem;
-  text-align: center;
-  max-width: 400px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-}
-
-.permission-icon {
-  width: 4rem;
-  height: 4rem;
-  color: #3b82f6;
-  margin: 0 auto 1rem;
-}
-
-.permission-card h3 {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.permission-card p {
-  color: #94a3b8;
-  margin-bottom: 2rem;
-  line-height: 1.5;
-}
-
-.permission-button {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.75rem 2rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.permission-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-}
-
-/* Error message */
-.error-message {
-  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  text-align: center;
-  max-width: 400px;
-  margin-top: 1rem;
-}
-
-.error-button {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.error-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* Mobile instructions */
-.mobile-instructions {
-  text-align: center;
-  color: #94a3b8;
-  font-size: 0.9rem;
-  max-width: 300px;
-  line-height: 1.4;
-  margin-top: 1rem;
 }
 
 /* Animated Background Disc */
@@ -996,7 +803,6 @@ watch(isSpeaking, (newVal, oldVal) => {
     padding: 0.25rem 0.7rem;
   }
 }
-<<<<<<< HEAD
 
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
@@ -1006,14 +812,13 @@ watch(isSpeaking, (newVal, oldVal) => {
   }
   
   .voice-button {
-    width: 200px;
-    height: 200px;
-    font-size: 1.8rem;
+    width: 200px !important;
+    height: 200px !important;
   }
   
   .voice-button::before {
-    width: 90px;
-    height: 90px;
+    width: 90px !important;
+    height: 90px !important;
   }
   
   .liquid-blob {
@@ -1023,10 +828,6 @@ watch(isSpeaking, (newVal, oldVal) => {
   
   .liquid-blob-active {
     transform: scale(2.5);
-  }
-  
-  .main-title {
-    font-size: 2.5rem;
   }
   
   .subtitle {
@@ -1066,31 +867,100 @@ watch(isSpeaking, (newVal, oldVal) => {
   }
 }
 
-/* Mobile optimization indicator */
-.mobile-optimization-indicator {
+/* Permission message */
+.permission-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.permission-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid #3b82f6;
   border-radius: 1rem;
-  color: #60a5fa;
-  font-size: 0.8rem;
-  font-weight: 500;
-  opacity: 0.8;
-  transition: opacity 0.3s;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
-.mobile-optimization-indicator:hover {
-  opacity: 1;
+.permission-icon {
+  width: 4rem;
+  height: 4rem;
+  color: #3b82f6;
+  margin: 0 auto 1rem;
 }
 
-.mobile-optimization-indicator svg {
-  color: #60a5fa;
+.permission-card h3 {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
-</style> 
-=======
+
+.permission-card p {
+  color: #94a3b8;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.permission-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.permission-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Error message */
+.error-message {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  max-width: 400px;
+  margin-top: 1rem;
+}
+
+.error-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.error-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mobile instructions */
+.mobile-instructions {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  max-width: 300px;
+  line-height: 1.4;
+  margin-top: 1rem;
+}
 </style>
->>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
