@@ -732,16 +732,16 @@ button:active {
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
-  /* Chat window ocupa toda la pantalla */
+  /* Chat window ocupa toda la pantalla - ELIMINAR */
   .w-full.h-full.md\:w-\[450px\].md\:h-\[600px\].md\:bottom-8.md\:right-8.md\:fixed {
     width: 100vw !important;
     max-width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
+    height: calc(100vh - 120px) !important;
+    max-height: calc(100vh - 120px) !important;
     border-radius: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    top: 0 !important;
+    top: 120px !important;
     bottom: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
@@ -749,26 +749,24 @@ button:active {
     z-index: 1050 !important;
   }
 
-  /* Contenedor principal ocupa toda la pantalla y z-index alto */
+  /* Contenedor principal ocupa toda la pantalla y z-index alto - ELIMINAR */
   .fixed.bottom-4.z-10,
   .fixed.bottom-4.right-4.z-30 {
     width: 100vw !important;
-    height: 100vh !important;
+    height: calc(100vh - 120px) !important;
     left: 0 !important;
     right: 0 !important;
-    top: 0 !important;
+    top: 120px !important;
     bottom: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     z-index: 1050 !important;
   }
 
-  /* Header fixed arriba con z-index aún mayor */
+  /* Header sticky arriba con z-index aún mayor */
   .flex-none.w-full.h-16 {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: sticky;
+    top: 0;
     z-index: 1100 !important;
     border-radius: 0 !important;
     background: linear-gradient(to right, #0f172a 90%, #1e293b 100%) !important;
@@ -779,9 +777,9 @@ button:active {
 
   /* Contenedor standalone también ajustado */
   .w-full.h-full.bg-transparent.border-none.shadow-none.rounded-none.flex.flex-col {
-    height: 100vh !important;
-    max-height: 100vh !important;
-    margin-top: 0 !important;
+    height: calc(100vh - 120px) !important;
+    max-height: calc(100vh - 120px) !important;
+    margin-top: 120px !important;
     z-index: 1050 !important;
   }
 
@@ -813,12 +811,12 @@ button:active {
   }
 
   /* Input fijo abajo */
-  .flex-none.w-full.px-4.py-3.bg-gradient-to-r.from-slate-800\/95.to-slate-700\/95.border-t.border-white\/10.flex.items-center.rounded-b-none.md\:rounded-b-2xl.shadow-lg {
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    z-index: 1100 !important;
+  .flex-none.w-full.h-20 {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
     background: linear-gradient(to right, #0f172a 90%, #1e293b 100%) !important;
     border-radius: 0 !important;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.12);
@@ -843,8 +841,7 @@ button:active {
   /* Mejorar scroll */
   .overflow-y-auto {
     scroll-behavior: smooth !important;
-    padding-top: 64px !important;
-    padding-bottom: 72px !important;
+    padding-bottom: 6rem !important;
   }
 
   /* Transiciones más rápidas */
@@ -1341,4 +1338,4 @@ input {
 .chat-icon {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
-</style>
+</style> 
