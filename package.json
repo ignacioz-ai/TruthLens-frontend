@@ -15,6 +15,7 @@
     "marked": "^15.0.12",
     "simplebar": "^6.3.1",
     "simplebar-vue": "^2.4.1",
+    "vue": "^3.4.21",
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
@@ -27,7 +28,6 @@
     "tsc": "^2.0.4",
     "typescript": "^5.8.3",
     "vite": "5.0.12",
-    "vue": "^3.5.16",
     "vue-tsc": "^2.2.10"
   }
 }
