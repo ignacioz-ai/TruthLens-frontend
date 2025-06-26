@@ -1,16 +1,16 @@
 <template>
     <!-- Container for article type and sentiment analysis details -->
-    <div class="space-y-6">
+    <div class="space-y-4 sm:space-y-6">
         <!-- Article Type Analysis Section -->
         <div v-if="articleType" class="space-y-3">
-            <div class="text-lg text-blue-300 font-semibold mb-1">Article Type Distribution</div>
+            <div class="text-base sm:text-lg text-blue-300 font-semibold mb-1">Article Type Distribution</div>
             <div class="space-y-2">
                 <div v-for="(value, type) in articleType" 
                      :key="type"
                      class="flex flex-col gap-1">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-slate-300 capitalize">{{ type }}</span>
-                        <span class="text-sm text-slate-400">{{ (value * 100).toFixed(0) }}%</span>
+                        <span class="text-sm text-slate-300 capitalize break-words">{{ type }}</span>
+                        <span class="text-sm text-slate-400 flex-shrink-0">{{ (value * 100).toFixed(0) }}%</span>
                     </div>
                     <!-- Progress bar for article type -->
                     <div class="h-2 w-full rounded-full bg-slate-800/20 overflow-hidden">
@@ -25,13 +25,13 @@
 
         <!-- Sentiments Analysis Section -->
         <div v-if="sentiments" class="space-y-3">
-            <div class="text-lg text-blue-300 font-semibold mb-1">Emotional Analysis</div>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="text-base sm:text-lg text-blue-300 font-semibold mb-1">Emotional Analysis</div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div v-for="(value, emotion) in sentiments" 
                      :key="emotion"
-                     class="flex flex-col items-center gap-2 p-3 rounded-lg bg-slate-800/20 border border-white/5
-                            hover:border-white/10 transition-all duration-300">
-                    <span class="text-sm font-medium text-slate-200 capitalize">{{ emotion }}</span>
+                     class="flex flex-col items-center gap-2 p-2 sm:p-3 rounded-lg bg-slate-800/20 border border-white/5
+                            hover:border-white/10 transition-all duration-300 min-w-0">
+                    <span class="text-xs sm:text-sm font-medium text-slate-200 capitalize text-center break-words">{{ emotion }}</span>
                     <!-- Progress bar for sentiment -->
                     <div class="w-full h-1.5 rounded-full bg-slate-800/20 overflow-hidden">
                         <div class="h-full rounded-full transition-all duration-500"
@@ -91,4 +91,47 @@ function getColor(key: string, type: 'gradient' | 'bg'): string {
     return colorMap[key as keyof typeof colorMap]?.[type] || 
            (type === 'gradient' ? 'bg-gradient-to-r from-slate-400 to-slate-600' : 'bg-slate-400/10');
 }
-</script> 
+</script>
+
+<style scoped>
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+  
+  .space-y-3 > * + * {
+    margin-top: 0.75rem;
+  }
+  
+  .gap-3 {
+    gap: 0.75rem;
+  }
+  
+  .text-base {
+    font-size: 0.875rem;
+  }
+  
+  .text-lg {
+    font-size: 1rem;
+  }
+  
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Ensure text doesn't overflow */
+.break-words {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+</style>
