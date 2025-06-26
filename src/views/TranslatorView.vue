@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import Header from '../components/Header.vue';
 import SimpleBar from 'simplebar-vue';
 import Tooltip from '../components/Tooltip.vue';
 import ChatBot from '../components/ChatBot.vue';
 import { getApiUrl, API_BASE_URL } from '../config/api';
+import { useAudioOptimization } from '../composables/useAudioOptimization';
+
+// Audio optimization
+const { isMobile, resumeAudioContext } = useAudioOptimization();
 
 const sourceText = ref('');
 const translatedText = ref('');
@@ -229,12 +233,20 @@ const translateWithVoice = async () => {
   }
 };
 
-const togglePlay = () => {
+const togglePlay = async () => {
   if (!audioRef.value) return;
+  
   if (isPlaying.value) {
     audioRef.value.pause();
   } else {
-    audioRef.value.play();
+    // Resume audio context for mobile
+    await resumeAudioContext();
+    
+    // Optimize audio for mobile
+    if (isMobile.value) {
+      audioRef.value.volume = 1.0; // Full volume on mobile
+    }
+    audioRef.value.play().catch(e => console.warn('Audio play failed:', e));
   }
 };
 
@@ -260,6 +272,16 @@ function formatTime(sec: number) {
   const s = Math.floor(sec % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
+
+// Lifecycle hooks
+onMounted(async () => {
+  // Resume audio context for mobile
+  await resumeAudioContext();
+});
+
+onUnmounted(() => {
+  // Cleanup code if needed
+});
 </script>
 
 <template>

@@ -55,6 +55,14 @@
           <span v-else-if="isSpeaking">Responding</span>
         </div>
       </transition>
+      
+      <!-- Mobile optimization indicator -->
+      <div v-if="isMobile" class="mobile-optimization-indicator">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+        <span>Mobile Optimized</span>
+      </div>
     </div>
     <!-- Tarjeta informativa de Clara -->
     <div class="mt-8 sm:mt-12 max-w-2xl mx-auto px-4 sm:px-0">
@@ -85,6 +93,10 @@ import listenStartSound from '../assets/sounds/listen_start.wav';
 import speakStartSound from '../assets/sounds/speak_start.mp3';
 import ChatBot from '../components/ChatBot.vue';
 import { Conversation } from '@elevenlabs/client';
+import { useAudioOptimization } from '../composables/useAudioOptimization';
+
+// Audio optimization
+const { isMobile, getMobileAudioConstraints, playAudio, resumeAudioContext } = useAudioOptimization();
 
 // State management
 const isActive = ref(false);
@@ -118,8 +130,12 @@ const initializeVoice = async (): Promise<boolean> => {
       throw new Error('Missing ElevenLabs API key or Agent ID');
     }
 
-    // Request microphone permissions
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Resume audio context for mobile
+    await resumeAudioContext();
+
+    // Request microphone permissions with mobile-optimized settings
+    const audioConstraints = getMobileAudioConstraints();
+    const stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
     hasPermissions.value = true;
     stream.getTracks().forEach(track => track.stop()); // Stop the stream after getting permissions
 
@@ -147,10 +163,8 @@ const initializeVoice = async (): Promise<boolean> => {
         if (mode.mode === 'speaking') {
           isSpeaking.value = true;
           isListening.value = false;
-          // Play speak start sound
-          const audio = new Audio(speakStartSound);
-          audio.volume = 0.5;
-          audio.play();
+          // Play speak start sound with mobile optimization
+          playAudio(speakStartSound, { volume: isMobile.value ? 0.8 : 0.5 });
         } else {
           isSpeaking.value = false;
           if (isAlwaysListening.value) {
@@ -224,8 +238,12 @@ const handleError = (message: string) => {
 // Lifecycle hooks
 onMounted(async () => {
   try {
-    // Check microphone permissions
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Resume audio context for mobile
+    await resumeAudioContext();
+    
+    // Check microphone permissions with mobile optimization
+    const audioConstraints = getMobileAudioConstraints();
+    const stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
     hasPermissions.value = true;
     stream.getTracks().forEach(track => track.stop());
   } catch (error) {
@@ -241,23 +259,16 @@ onUnmounted(async () => {
   }
 });
 
-// Function to play sounds
-const playSound = (src: string) => {
-  const audio = new Audio(src);
-  audio.volume = 0.7;
-  audio.play();
-};
-
 // Watch to play sounds when state changes
 watch(isListening, (newVal, oldVal) => {
   console.log('isListening changed:', oldVal, '->', newVal);
   if (newVal && !oldVal) {
-    playSound(listenStartSound);
+    playAudio(listenStartSound);
   }
 });
 watch(isSpeaking, (newVal, oldVal) => {
   if (newVal && !oldVal) {
-    playSound(speakStartSound);
+    playAudio(speakStartSound);
   }
 });
 </script>
@@ -702,5 +713,98 @@ watch(isSpeaking, (newVal, oldVal) => {
   border-radius: 80%;
   z-index: 10;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.18);
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  .voice-button-wrapper {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .voice-button {
+    width: 200px;
+    height: 200px;
+    font-size: 1.8rem;
+  }
+  
+  .voice-button::before {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .liquid-blob {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .liquid-blob-active {
+    transform: scale(2.5);
+  }
+  
+  .main-title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  /* Improve touch targets for mobile */
+  .voice-button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  /* Optimize audio visual feedback */
+  .disc-gradient-bright {
+    filter: brightness(1.4) saturate(1.6) drop-shadow(0 0 40px #38bdf8cc);
+  }
+}
+
+/* iOS-specific optimizations */
+@supports (-webkit-touch-callout: none) {
+  .voice-button {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Ensure audio plays on iOS */
+  audio {
+    -webkit-playsinline: true;
+    playsinline: true;
+  }
+}
+
+/* Android-specific optimizations */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .voice-button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Mobile optimization indicator */
+.mobile-optimization-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 1rem;
+  color: #60a5fa;
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.mobile-optimization-indicator:hover {
+  opacity: 1;
+}
+
+.mobile-optimization-indicator svg {
+  color: #60a5fa;
 }
 </style> 
