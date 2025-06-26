@@ -1,7 +1,7 @@
 // Environment Configuration
 export const ENV_CONFIG = {
-  // Environment
-  ENV: import.meta.env.VITE_ENV || 'development',
+  // Environment - force production for deployed builds
+  ENV: import.meta.env.VITE_ENV || (import.meta.env.PROD ? 'production' : 'development'),
   
   // URLs
   URLS: {
@@ -47,20 +47,29 @@ export const ENV_CONFIG = {
 
 // Helper functions
 export const getApiUrl = (): string => {
-  return import.meta.env.VITE_API_BASE_URL || 
-    (ENV_CONFIG.ENV === 'production' 
-      ? ENV_CONFIG.URLS.PRODUCTION.API 
-      : ENV_CONFIG.URLS.DEVELOPMENT.API);
+  // Check for explicit environment variable first
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  
+  // Use production URL if we're in a production build or explicitly set to production
+  const isProduction = import.meta.env.PROD || ENV_CONFIG.ENV === 'production';
+  
+  return isProduction 
+    ? ENV_CONFIG.URLS.PRODUCTION.API 
+    : ENV_CONFIG.URLS.DEVELOPMENT.API;
 };
 
 export const getFrontendUrl = (): string => {
-  return ENV_CONFIG.ENV === 'production'
+  const isProduction = import.meta.env.PROD || ENV_CONFIG.ENV === 'production';
+  return isProduction
     ? ENV_CONFIG.URLS.PRODUCTION.FRONTEND
     : ENV_CONFIG.URLS.DEVELOPMENT.FRONTEND;
 };
 
 export const getDocsUrl = (): string => {
-  return ENV_CONFIG.ENV === 'production'
+  const isProduction = import.meta.env.PROD || ENV_CONFIG.ENV === 'production';
+  return isProduction
     ? ENV_CONFIG.URLS.PRODUCTION.DOCS
     : ENV_CONFIG.URLS.DEVELOPMENT.DOCS;
 };
@@ -73,5 +82,5 @@ export const getBoltUrl = (): string => {
   return ENV_CONFIG.URLS.PRODUCTION.BOLT;
 };
 
-export const isDevelopment = (): boolean => ENV_CONFIG.ENV === 'development';
-export const isProduction = (): boolean => ENV_CONFIG.ENV === 'production';
+export const isDevelopment = (): boolean => !import.meta.env.PROD && ENV_CONFIG.ENV === 'development';
+export const isProduction = (): boolean => import.meta.env.PROD || ENV_CONFIG.ENV === 'production';
