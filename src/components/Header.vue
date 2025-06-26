@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import InfoSection from './InfoSection.vue';
 import { RouterLink, useRoute } from 'vue-router';
-import { getDocsUrl, isDevelopment } from '../config/environment';
 
 // State management for help modal visibility and animation
 const showHelp = ref(false);
@@ -26,11 +25,6 @@ const links: NavLink[] = [
   { name: 'ChatBot', href: '/chatbot' },
   { name: 'Voice Chat', href: '/voice-chat' }
 ];
-
-// Add Docs link only in development environment
-if (isDevelopment()) {
-  links.push({ name: 'Docs', href: getDocsUrl(), external: true });
-}
 
 /**
  * Toggle the help modal with smooth animation
