@@ -7,7 +7,7 @@ export const ENV_CONFIG = {
   URLS: {
     PRODUCTION: {
       API: 'https://truthlens-backend-production-b9e0.up.railway.app',
-      FRONTEND: 'https://glowing-mooncake-e6a9e1.netlify.app',
+      FRONTEND: 'https://truthlensai.netlify.app',
       DOCS: 'https://truthlens-backend-production-b9e0.up.railway.app/docs',
       GITHUB: 'https://github.com/ignacioai/truthlens',
       BOLT: 'https://bolt.new'
