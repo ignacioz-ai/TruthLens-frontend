@@ -10,37 +10,59 @@
           <p class="subtitle">Chat with <span class="gradient-text">Clara</span>. Your real-time multilingual AI from TruthLens.</p>
         </div>
       </transition>
+      
+      <!-- Mobile permission message -->
+      <transition name="fade-scale" appear>
+        <div v-if="!hasPermissions && isMobile" class="permission-message">
+          <div class="permission-card">
+            <svg class="permission-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+            <h3>Microphone Access Required</h3>
+            <p>To chat with Clara, please allow microphone access when prompted.</p>
+            <button @click="requestPermissions" class="permission-button">
+              Enable Microphone
+            </button>
+          </div>
+        </div>
+      </transition>
+
       <!-- Voice Assistant Main Button with animated disc background -->
       <transition name="scale-fade" appear>
         <div class="voice-button-wrapper" :class="{ 'active': isActive, 'listening': isListening, 'speaking': isSpeaking }">
           <!-- Label Call Clara sobre el botón, solo cuando está inactiva -->
-          <div v-if="!isListening && !isSpeaking && !isConnecting && !isAlwaysListening" class="call-clara-label">
+          <div v-if="!isListening && !isSpeaking && !isConnecting && !isAlwaysListening && hasPermissions" class="call-clara-label">
             <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style="margin-right:6px;">
               <rect x="3" y="10" width="2" height="4" rx="1" fill="#60a5fa"/>
               <rect x="7" y="7" width="2" height="10" rx="1" fill="#60a5fa"/>
               <rect x="11" y="5" width="2" height="14" rx="1" fill="#60a5fa"/>
               <rect x="15" y="8" width="2" height="8" rx="1" fill="#60a5fa"/>
             </svg>
-            Call Clara
+            {{ isMobile ? 'Tap to Talk' : 'Call Clara' }}
           </div>
+          
           <!-- Animated Background Disc -->
           <div class="voice-disc">
             <div :class="['disc-gradient', (isListening || isSpeaking) ? 'disc-gradient-bright' : '']"></div>
             <div class="disc-shine"></div>
           </div>
+          
           <!-- Main Button for voice interaction -->
           <button
             @click="toggleVoiceChat"
+            @touchstart="handleTouchStart"
+            @touchend="handleTouchEnd"
             @mousedown="handleMouseDown"
             @mouseup="handleMouseUp"
             @mouseleave="handleMouseUp"
-            :disabled="isConnecting"
+            :disabled="isConnecting || !hasPermissions"
             class="voice-button"
             :class="{
               'listening': isListening,
               'speaking': isSpeaking,
               'connecting': isConnecting,
-              'error': hasError
+              'error': hasError,
+              'disabled': !hasPermissions
             }"
             :aria-label="getButtonLabel()"
           >
@@ -48,11 +70,28 @@
           </button>
         </div>
       </transition>
+      
       <!-- State label for listening/speaking -->
       <transition name="state-fade-slide" mode="out-in">
-        <div v-if="isListening || isSpeaking" class="voice-state-label" key="state-label">
-          <span v-if="isListening">Listening</span>
-          <span v-else-if="isSpeaking">Responding</span>
+        <div v-if="isListening || isSpeaking || isConnecting" class="voice-state-label" key="state-label">
+          <span v-if="isConnecting">Connecting...</span>
+          <span v-else-if="isListening">{{ isMobile ? 'Listening...' : 'Listening' }}</span>
+          <span v-else-if="isSpeaking">{{ isMobile ? 'Clara is responding...' : 'Responding' }}</span>
+        </div>
+      </transition>
+
+      <!-- Error message -->
+      <transition name="fade-scale">
+        <div v-if="hasError" class="error-message">
+          <p>{{ statusMessage }}</p>
+          <button @click="resetError" class="error-button">Try Again</button>
+        </div>
+      </transition>
+
+      <!-- Mobile instructions -->
+      <transition name="fade-scale" appear>
+        <div v-if="isMobile && hasPermissions" class="mobile-instructions">
+          <p>{{ isAlwaysListening ? 'Tap again to end conversation' : 'Tap and hold to speak with Clara' }}</p>
         </div>
       </transition>
       
@@ -64,6 +103,7 @@
         <span>Mobile Optimized</span>
       </div>
     </div>
+    
     <!-- Tarjeta informativa de Clara -->
     <div class="mt-8 sm:mt-12 max-w-2xl mx-auto px-4 sm:px-0">
       <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 rounded-2xl shadow-xl border border-cyan-400/20 p-6 sm:p-8 mb-8 flex flex-col items-start">
@@ -82,13 +122,14 @@
         <p class="text-slate-200 text-base font-semibold">Clara's goal is to help you think for yourself.</p>
       </div>
     </div>
+    
     <!-- ChatBot assistant at the bottom -->
     <ChatBot />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 import listenStartSound from '../assets/sounds/listen_start.wav';
 import speakStartSound from '../assets/sounds/speak_start.mp3';
 import ChatBot from '../components/ChatBot.vue';
@@ -107,20 +148,57 @@ const hasError = ref(false);
 const statusMessage = ref('');
 const isAlwaysListening = ref(false);
 const hasPermissions = ref(false);
+const isMobile = ref(false);
 
 // ElevenLabs configuration
 const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
 const agentId = import.meta.env.VITE_ELEVENLABS_AGENT_ID;
 let conversation: Conversation | null = null;
 
+// Touch handling for mobile
+let touchStartTime = 0;
+let touchTimer: number | null = null;
+
+// Detect mobile device
+const detectMobile = () => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  const mobileKeywords = ['android', 'iphone', 'ipad', 'ipod', 'windows phone', 'mobile'];
+  const isMobileByUA = mobileKeywords.some(keyword => userAgent.includes(keyword));
+  const isMobileByScreen = window.innerWidth <= 768;
+  const hasTouch = 'ontouchstart' in window;
+  
+  isMobile.value = isMobileByUA || isMobileByScreen || hasTouch;
+};
+
 // Computed properties
 const getButtonLabel = () => {
-  if (!hasPermissions.value) return 'Activar micrófono';
-  if (isConnecting.value) return 'Conectando...';
-  if (isAlwaysListening.value) return 'Finalizar conversación';
-  if (isListening.value) return 'Escuchando...';
-  if (isSpeaking.value) return 'Clara está respondiendo';
-  return 'Iniciar conversación';
+  if (!hasPermissions.value) return 'Enable microphone to chat with Clara';
+  if (isConnecting.value) return 'Connecting to Clara...';
+  if (isAlwaysListening.value) return 'End conversation with Clara';
+  if (isListening.value) return 'Clara is listening...';
+  if (isSpeaking.value) return 'Clara is responding';
+  return isMobile.value ? 'Tap to talk with Clara' : 'Click to start conversation with Clara';
+};
+
+// Request microphone permissions
+const requestPermissions = async (): Promise<boolean> => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        sampleRate: 44100
+      } 
+    });
+    hasPermissions.value = true;
+    stream.getTracks().forEach(track => track.stop());
+    return true;
+  } catch (error) {
+    console.error('Error requesting microphone permissions:', error);
+    handleError('Microphone access denied. Please enable microphone permissions in your browser settings.');
+    return false;
+  }
 };
 
 // Initialize ElevenLabs Voice
@@ -130,6 +208,7 @@ const initializeVoice = async (): Promise<boolean> => {
       throw new Error('Missing ElevenLabs API key or Agent ID');
     }
 
+<<<<<<< HEAD
     // Resume audio context for mobile
     await resumeAudioContext();
 
@@ -138,8 +217,16 @@ const initializeVoice = async (): Promise<boolean> => {
     const stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
     hasPermissions.value = true;
     stream.getTracks().forEach(track => track.stop()); // Stop the stream after getting permissions
+=======
+    if (!hasPermissions.value) {
+      const granted = await requestPermissions();
+      if (!granted) return false;
+    }
+>>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
 
-    // Start the conversation
+    isConnecting.value = true;
+
+    // Start the conversation with mobile-optimized settings
     conversation = await Conversation.startSession({
       agentId,
       onConnect: () => {
@@ -147,29 +234,48 @@ const initializeVoice = async (): Promise<boolean> => {
         isListening.value = true;
         isSpeaking.value = false;
         isConnecting.value = false;
+        hasError.value = false;
+        
+        // Play connection sound
+        if (isMobile.value) {
+          playSound(listenStartSound, 0.3);
+        } else {
+          playSound(listenStartSound, 0.5);
+        }
       },
       onDisconnect: () => {
         console.log('Voice conversation disconnected');
         isListening.value = false;
         isSpeaking.value = false;
         isConnecting.value = false;
+        isAlwaysListening.value = false;
+        isActive.value = false;
       },
       onError: (message: string) => {
         console.error('Voice error:', message);
-        handleError(message || 'Error en la conversación de voz');
+        handleError(message || 'Error in voice conversation');
       },
       onModeChange: (mode) => {
         console.log('Mode changed:', mode.mode);
         if (mode.mode === 'speaking') {
           isSpeaking.value = true;
           isListening.value = false;
+<<<<<<< HEAD
           // Play speak start sound with mobile optimization
           playAudio(speakStartSound, { volume: isMobile.value ? 0.8 : 0.5 });
         } else {
+=======
+          // Play speak start sound with lower volume on mobile
+          playSound(speakStartSound, isMobile.value ? 0.3 : 0.5);
+        } else if (mode.mode === 'listening') {
+>>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
           isSpeaking.value = false;
           if (isAlwaysListening.value) {
             isListening.value = true;
           }
+        } else {
+          isSpeaking.value = false;
+          isListening.value = false;
         }
       }
     });
@@ -177,17 +283,20 @@ const initializeVoice = async (): Promise<boolean> => {
     return true;
   } catch (error) {
     console.error('Error initializing voice:', error);
-    handleError('Error al inicializar el asistente de voz');
+    handleError('Failed to connect to Clara. Please check your internet connection and try again.');
     return false;
   }
 };
 
 // Voice chat control
 const toggleVoiceChat = async () => {
+  if (!hasPermissions.value) {
+    await requestPermissions();
+    return;
+  }
+
   if (!conversation) {
-    isConnecting.value = true;
     const success = await initializeVoice();
-    isConnecting.value = false;
     if (!success) return;
   }
 
@@ -204,15 +313,57 @@ const toggleVoiceChat = async () => {
   }
 };
 
-// Mouse event handlers
-const handleMouseDown = () => {
+// Touch event handlers for mobile
+const handleTouchStart = (e: TouchEvent) => {
+  e.preventDefault();
+  if (!hasPermissions.value) {
+    requestPermissions();
+    return;
+  }
+  
+  touchStartTime = Date.now();
   if (!isAlwaysListening.value && !isConnecting.value) {
+    isActive.value = true;
+    // Start conversation after a short delay to prevent accidental triggers
+    touchTimer = window.setTimeout(async () => {
+      if (!conversation) {
+        await initializeVoice();
+      }
+    }, 100);
+  }
+};
+
+const handleTouchEnd = async (e: TouchEvent) => {
+  e.preventDefault();
+  if (touchTimer) {
+    clearTimeout(touchTimer);
+    touchTimer = null;
+  }
+  
+  const touchDuration = Date.now() - touchStartTime;
+  
+  // If it was a quick tap and we're in always listening mode, toggle off
+  if (touchDuration < 200 && isAlwaysListening.value && conversation) {
+    await conversation.endSession();
+    conversation = null;
+    isAlwaysListening.value = false;
+    isActive.value = false;
+  }
+  // If it was a longer press and we're not in always listening, start conversation
+  else if (touchDuration >= 200 && !isAlwaysListening.value) {
+    await toggleVoiceChat();
+  }
+};
+
+// Mouse event handlers for desktop
+const handleMouseDown = () => {
+  if (!isMobile.value && !isAlwaysListening.value && !isConnecting.value && hasPermissions.value) {
     isActive.value = true;
   }
 };
 
 const handleMouseUp = async () => {
-  if (!isAlwaysListening.value && !isConnecting.value && isActive.value && conversation) {
+  if (!isMobile.value && !isAlwaysListening.value && !isConnecting.value && isActive.value && conversation) {
     isActive.value = false;
     await conversation.endSession();
     conversation = null;
@@ -229,14 +380,20 @@ const handleError = (message: string) => {
   isAlwaysListening.value = false;
   isActive.value = false;
   
-  setTimeout(() => {
-    hasError.value = false;
-    statusMessage.value = '';
-  }, 3000);
+  if (conversation) {
+    conversation.endSession();
+    conversation = null;
+  }
+};
+
+const resetError = () => {
+  hasError.value = false;
+  statusMessage.value = '';
 };
 
 // Lifecycle hooks
 onMounted(async () => {
+<<<<<<< HEAD
   try {
     // Resume audio context for mobile
     await resumeAudioContext();
@@ -249,26 +406,72 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error checking microphone permissions:', error);
     hasPermissions.value = false;
+=======
+  detectMobile();
+  window.addEventListener('resize', detectMobile);
+  window.addEventListener('orientationchange', detectMobile);
+  
+  // Auto-request permissions on desktop
+  if (!isMobile.value) {
+    await requestPermissions();
+>>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
   }
 });
 
 onUnmounted(async () => {
+  window.removeEventListener('resize', detectMobile);
+  window.removeEventListener('orientationchange', detectMobile);
+  
+  if (touchTimer) {
+    clearTimeout(touchTimer);
+  }
+  
   if (conversation) {
     await conversation.endSession();
     conversation = null;
   }
 });
 
+<<<<<<< HEAD
 // Watch to play sounds when state changes
 watch(isListening, (newVal, oldVal) => {
   console.log('isListening changed:', oldVal, '->', newVal);
   if (newVal && !oldVal) {
     playAudio(listenStartSound);
+=======
+// Function to play sounds with volume control
+const playSound = (src: string, volume: number = 0.5) => {
+  try {
+    const audio = new Audio(src);
+    audio.volume = Math.min(Math.max(volume, 0), 1); // Clamp between 0 and 1
+    
+    // Handle mobile audio playback restrictions
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn('Audio playback failed:', error);
+      });
+    }
+  } catch (error) {
+    console.warn('Error playing sound:', error);
+  }
+};
+
+// Watch to play sounds when state changes
+watch(isListening, (newVal, oldVal) => {
+  if (newVal && !oldVal && !isConnecting.value) {
+    playSound(listenStartSound, isMobile.value ? 0.3 : 0.5);
+>>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
   }
 });
+
 watch(isSpeaking, (newVal, oldVal) => {
   if (newVal && !oldVal) {
+<<<<<<< HEAD
     playAudio(speakStartSound);
+=======
+    playSound(speakStartSound, isMobile.value ? 0.3 : 0.5);
+>>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc
   }
 });
 </script>
@@ -281,6 +484,7 @@ watch(isSpeaking, (newVal, oldVal) => {
   align-items: center;
   justify-content: flex-start;
   padding-top: 13vh;
+  padding-bottom: 2rem;
 }
 
 .voice-assistant-container {
@@ -289,6 +493,8 @@ watch(isSpeaking, (newVal, oldVal) => {
   align-items: center;
   gap: 2.5rem;
   justify-content: center;
+  max-width: 100%;
+  padding: 0 1rem;
 }
 
 .voice-button-wrapper {
@@ -298,6 +504,123 @@ watch(isSpeaking, (newVal, oldVal) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width: 90vw;
+  max-height: 90vw;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .voice-button-wrapper {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .voice-button {
+    width: 200px !important;
+    height: 200px !important;
+  }
+  
+  .voice-button::before {
+    width: 90px !important;
+    height: 90px !important;
+  }
+}
+
+/* Permission message */
+.permission-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.permission-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid #3b82f6;
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.permission-icon {
+  width: 4rem;
+  height: 4rem;
+  color: #3b82f6;
+  margin: 0 auto 1rem;
+}
+
+.permission-card h3 {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.permission-card p {
+  color: #94a3b8;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.permission-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.permission-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Error message */
+.error-message {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  max-width: 400px;
+  margin-top: 1rem;
+}
+
+.error-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.error-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mobile instructions */
+.mobile-instructions {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  max-width: 300px;
+  line-height: 1.4;
+  margin-top: 1rem;
 }
 
 /* Animated Background Disc */
@@ -339,10 +662,7 @@ watch(isSpeaking, (newVal, oldVal) => {
     #38bdf8 300deg,
     #38bdf8 360deg
   );
-}
-
-.disc-gradient-fast {
-  animation-duration: 2s !important;
+  animation-duration: 3s;
 }
 
 .disc-shine {
@@ -380,6 +700,9 @@ watch(isSpeaking, (newVal, oldVal) => {
     inset 0 4px 8px rgba(255, 255, 255, 0.1);
   font-size: 2.2rem;
   overflow: visible;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .voice-button::before {
@@ -396,7 +719,7 @@ watch(isSpeaking, (newVal, oldVal) => {
   box-shadow: 0 0 0 2px rgba(59,130,246,0.1);
 }
 
-.voice-button:hover {
+.voice-button:hover:not(:disabled) {
   transform: scale(1.07);
   border-color: rgba(59, 130, 246, 0.5);
   box-shadow: 
@@ -404,62 +727,43 @@ watch(isSpeaking, (newVal, oldVal) => {
     inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
 
-.voice-button:active {
+.voice-button:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-.voice-button:disabled {
+.voice-button:disabled,
+.voice-button.disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.5;
+  transform: none !important;
 }
 
-/* Button Content */
-.button-icon {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 12;
+.voice-button.listening {
+  border-color: rgba(34, 197, 94, 0.6);
+  box-shadow: 
+    0 0 80px rgba(34, 197, 94, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
 
-.icon-mic,
-.icon-speaker {
-  width: 100%;
-  height: 100%;
-  stroke-width: 3.5;
+.voice-button.speaking {
+  border-color: rgba(249, 115, 22, 0.6);
+  box-shadow: 
+    0 0 80px rgba(249, 115, 22, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
 
-.icon-waveform {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  height: 100%;
+.voice-button.connecting {
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 
+    0 0 80px rgba(168, 85, 247, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
 
-.wave-bar {
-  width: 6px;
-  height: 40px;
-  background: currentColor;
-  border-radius: 3px;
-  animation: waveform 1s ease-in-out infinite;
-}
-
-.icon-loading {
-  display: none;
-}
-
-.loading-spinner {
-  display: none;
-}
-
-.button-text {
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-align: center;
-  line-height: 1.2;
-  z-index: 12;
+.voice-button.error {
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 
+    0 0 80px rgba(239, 68, 68, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
 
 /* Title Styles */
@@ -479,6 +783,12 @@ watch(isSpeaking, (newVal, oldVal) => {
   color: transparent;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 2.5rem;
+  }
 }
 
 .gradient-text {
@@ -509,10 +819,6 @@ watch(isSpeaking, (newVal, oldVal) => {
 .fade-scale-leave-from, .fade-scale-enter-to {
   opacity: 1;
   transform: scale(1);
-}
-
-.modern-fade {
-  transition: opacity 0.3s, transform 0.3s;
 }
 
 /* Blob Animations */
@@ -663,24 +969,6 @@ watch(isSpeaking, (newVal, oldVal) => {
   }
 }
 
-.permission-hint,
-.permission-message {
-  display: none;
-}
-.permission-hint-text {
-  color: #60a5fa;
-  border: 1px solid #60a5fa;
-  background: none;
-  font-size: 0.97rem;
-  margin: 1.2rem auto 0 auto;
-  padding: 0.3rem 1.2rem;
-  border-radius: 6px;
-  text-align: center;
-  font-weight: 500;
-  max-width: 350px;
-  opacity: 0.8;
-}
-
 .call-clara-label {
   display: flex;
   align-items: center;
@@ -702,18 +990,13 @@ watch(isSpeaking, (newVal, oldVal) => {
   letter-spacing: 0.01em;
 }
 
-.clara-inner-circle {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 38px;
-  height: 38px;
-  background: rgba(16,22,36,0.92);
-  border-radius: 80%;
-  z-index: 10;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.18);
+@media (max-width: 768px) {
+  .call-clara-label {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.7rem;
+  }
 }
+<<<<<<< HEAD
 
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
@@ -808,3 +1091,6 @@ watch(isSpeaking, (newVal, oldVal) => {
   color: #60a5fa;
 }
 </style> 
+=======
+</style>
+>>>>>>> 145db5a337053835e1c3356379c22f0e93f048dc

@@ -178,6 +178,7 @@
 <script setup lang="ts">
 import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue'
 import { getApiUrl, checkApiHealth, CHAT_CONFIG, checkMobile as checkMobileConfig } from '../config'
+import { useScrollLock } from '../composables/useScrollLock'
 
 // Define message type
 interface ChatMessage {
@@ -195,6 +196,9 @@ const inputRef = ref<HTMLInputElement | null>(null)
 const isMobile = ref(false)
 const isApiHealthy = ref(true)
 const retryCount = ref(0)
+
+// Scroll lock composable
+const { cleanup } = useScrollLock()
 
 // Check if device is mobile
 const checkMobile = () => {
@@ -218,6 +222,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
+  // Cleanup scroll lock when component unmounts
+  cleanup()
 })
 
 const scrollToBottom = () => {
@@ -594,4 +600,4 @@ const handleInputFocus = () => {
   word-break: break-word;
   overflow-wrap: anywhere;
 }
-</style> 
+</style>
