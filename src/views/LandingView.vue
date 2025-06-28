@@ -15,14 +15,14 @@
         <!-- Main Headlines -->
         <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in-up">
           <span class="bg-gradient-to-r from-cyan-300 via-blue-500 to-cyan-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
-            {{ $t('landing.hero.title') }}
+            {{ t('landing.hero.title') }}
           </span>
           <br>
-          <span class="text-white">{{ $t('landing.hero.subtitle') }}</span>
+          <span class="text-white">{{ t('landing.hero.subtitle') }}</span>
         </h1>
 
         <p class="text-lg md:text-xl text-blue-200/80 font-light mb-16 max-w-4xl mx-auto leading-relaxed animate-fade-in-up delay-200">
-          {{ $t('landing.hero.description') }}
+          {{ t('landing.hero.description') }}
         </p>
 
         <!-- Primary CTA -->
@@ -32,7 +32,7 @@
             class="group px-10 py-5 card-active rounded-2xl border border-cyan-400/50 shadow-lg text-white font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/25 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-cyan-400 relative overflow-hidden"
           >
             <span class="relative z-10 flex items-center justify-center">
-              {{ $t('landing.hero.tryDemo') }}
+              {{ t('landing.hero.tryDemo') }}
             </span>
             <div class="absolute inset-0 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-2xl opacity-30 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
@@ -52,14 +52,14 @@
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
           <h2 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">
-            {{ $t('landing.features.title') }}
+            {{ t('landing.features.title') }}
           </h2>
           <p class="text-sm md:text-base text-slate-300 max-w-3xl mx-auto mb-1">
-            {{ $t('landing.features.subtitle') }}
+            {{ t('landing.features.subtitle') }}
           </p>
           <div class="flex items-center justify-center gap-2 mt-1 text-xs font-medium">
             <span class="px-1 py-0.5 rounded bg-cyan-900/60 text-cyan-200 tracking-wide" style="letter-spacing:0.04em;">
-              {{ $t('landing.features.multilingualBadge') }}
+              {{ t('landing.features.multilingualBadge') }}
             </span>
           </div>
         </div>
@@ -73,10 +73,10 @@
               </svg>
             </div>
             <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">
-              {{ $t('landing.tools.textAnalyzer.title') }}
+              {{ t('landing.tools.textAnalyzer.title') }}
             </h3>
             <p class="text-slate-300 leading-relaxed">
-              {{ $t('landing.tools.textAnalyzer.description') }}
+              {{ t('landing.tools.textAnalyzer.description') }}
             </p>
           </RouterLink>
 
@@ -88,10 +88,10 @@
               </svg>
             </div>
             <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">
-              {{ $t('landing.tools.translator.title') }}
+              {{ t('landing.tools.translator.title') }}
             </h3>
             <p class="text-slate-300 leading-relaxed">
-              {{ $t('landing.tools.translator.description') }}
+              {{ t('landing.tools.translator.description') }}
             </p>
           </RouterLink>
 
@@ -103,10 +103,10 @@
               </svg>
             </div>
             <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">
-              {{ $t('landing.tools.imageAnalysis.title') }}
+              {{ t('landing.tools.imageAnalysis.title') }}
             </h3>
             <p class="text-slate-300 leading-relaxed">
-              {{ $t('landing.tools.imageAnalysis.description') }}
+              {{ t('landing.tools.imageAnalysis.description') }}
             </p>
           </RouterLink>
 
@@ -118,10 +118,10 @@
               </svg>
             </div>
             <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">
-              {{ $t('landing.tools.assistant.title') }}
+              {{ t('landing.tools.assistant.title') }}
             </h3>
             <p class="text-slate-300 leading-relaxed">
-              {{ $t('landing.tools.assistant.description') }}
+              {{ t('landing.tools.assistant.description') }}
             </p>
           </RouterLink>
 
@@ -134,10 +134,10 @@
             </div>
             <div class="flex-1">
               <h3 class="text-2xl md:text-3xl font-bold mb-2 text-cyan-300 group-hover:text-cyan-200 transition-colors">
-                {{ $t('landing.tools.clara.title') }}
+                {{ t('landing.tools.clara.title') }}
               </h3>
               <p class="text-slate-300 text-lg mb-0">
-                {{ $t('landing.tools.clara.description') }}
+                {{ t('landing.tools.clara.description') }}
               </p>
             </div>
           </a>
@@ -161,32 +161,32 @@
               <span class="text-2xl font-bold text-white">TruthLens</span>
             </div>
             <p class="text-slate-300 leading-relaxed">
-              {{ $t('landing.footer.description') }}
+              {{ t('landing.footer.description') }}
             </p>
           </div>
 
           <!-- Quick Links -->
           <div class="space-y-4">
-            <h3 class="text-lg font-semibold text-white">{{ $t('landing.footer.quickLinks') }}</h3>
+            <h3 class="text-lg font-semibold text-white">{{ t('landing.footer.quickLinks') }}</h3>
             <div class="grid grid-cols-2 gap-2">
               <RouterLink to="/analyze" class="block text-slate-300 hover:text-cyan-400 transition-colors">
-                {{ $t('landing.footer.textAnalyzer') }}
+                {{ t('landing.footer.textAnalyzer') }}
               </RouterLink>
               <RouterLink to="/translator" class="block text-slate-300 hover:text-cyan-400 transition-colors">
-                {{ $t('landing.footer.translatorPro') }}
+                {{ t('landing.footer.translatorPro') }}
               </RouterLink>
               <RouterLink to="/image-analysis" class="block text-slate-300 hover:text-cyan-400 transition-colors">
-                {{ $t('landing.footer.imageAnalysis') }}
+                {{ t('landing.footer.imageAnalysis') }}
               </RouterLink>
               <RouterLink to="/voice-assistant" class="block text-slate-300 hover:text-cyan-400 transition-colors">
-                {{ $t('landing.footer.voiceAssistant') }}
+                {{ t('landing.footer.voiceAssistant') }}
               </RouterLink>
             </div>
           </div>
 
           <!-- Connect Section -->
           <div class="space-y-4">
-            <h3 class="text-lg font-semibold text-white">{{ $t('landing.footer.connect') }}</h3>
+            <h3 class="text-lg font-semibold text-white">{{ t('landing.footer.connect') }}</h3>
             <div class="space-y-3">
               <a 
                 :href="getBoltUrl()" 
@@ -197,7 +197,7 @@
                 <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                <span>{{ $t('landing.footer.builtWithBolt') }}</span>
+                <span>{{ t('landing.footer.builtWithBolt') }}</span>
               </a>
             </div>
           </div>
@@ -211,14 +211,14 @@
               <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
               </svg>
-              <span class="text-cyan-400 font-medium">{{ $t('landing.footer.createdForHackathon') }}</span>
+              <span class="text-cyan-400 font-medium">{{ t('landing.footer.createdForHackathon') }}</span>
             </div>
           </div>
         </div>
 
         <!-- Copyright -->
         <div class="mt-8 pt-8 border-t border-white/10 text-center text-slate-400">
-          <p>{{ $t('landing.footer.copyright') }}</p>
+          <p>{{ t('landing.footer.copyright') }}</p>
         </div>
       </div>
     </footer>
