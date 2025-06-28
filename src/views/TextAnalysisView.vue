@@ -24,7 +24,7 @@ async function handleAnalyze(text: string) {
         <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 relative">
           <span class="bg-gradient-to-r from-cyan-300 via-blue-500 to-cyan-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">TruthLens</span>
         </h1>
-        <p class="text-md sm:text-lg text-blue-200/80 font-display tracking-wide">Analyze news articles for bias and credibility</p>
+        <p class="text-md sm:text-lg text-blue-200/80 font-display tracking-wide">{{ $t('textAnalysis.hero.subtitle') }}</p>
       </div>
       
       <AnalysisForm class="animate-fadeInUp" @analyze="handleAnalyze" />
@@ -37,16 +37,16 @@ async function handleAnalyze(text: string) {
         <svg class="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        <h2 class="text-xl sm:text-2xl font-bold text-white">Text Analysis</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-white">{{ $t('textAnalysis.info.title') }}</h2>
       </div>
-      <p class="text-slate-200 mb-3 text-base">Understand how media content shapes perception. Drop any news article or written statement and TruthLens will detect:</p>
+      <p class="text-slate-200 mb-3 text-base">{{ $t('textAnalysis.info.description') }}</p>
       <ul class="list-disc list-inside text-slate-300 mb-3 text-base">
-        <li>Emotional language and sentiment</li>
-        <li>Ideological bias and manipulative framing</li>
-        <li>Source credibility signals</li>
-        <li>Factual consistency indicators</li>
+        <li>{{ $t('textAnalysis.info.features.emotionalLanguage') }}</li>
+        <li>{{ $t('textAnalysis.info.features.ideologicalBias') }}</li>
+        <li>{{ $t('textAnalysis.info.features.sourceCredibility') }}</li>
+        <li>{{ $t('textAnalysis.info.features.factualConsistency') }}</li>
       </ul>
-      <p class="text-slate-200 text-base">Based on validated criteria from DOCA (Database of Variables for Content Analysis), your report includes a bias score, credibility assessment, and suggestions to verify or contrast the information.</p>
+      <p class="text-slate-200 text-base">{{ $t('textAnalysis.info.basedOnValidatedCriteria') }}</p>
     </div>
   </div>
 

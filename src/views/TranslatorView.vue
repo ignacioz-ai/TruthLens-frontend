@@ -301,11 +301,11 @@ onUnmounted(() => {
         <div class="text-center mb-3">
           <h1 class="font-display text-4xl sm:text-5xl font-bold mb-2 relative animate-fade-in">
             <span class="bg-gradient-to-r from-cyan-300 via-blue-500 to-cyan-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
-              TruthLens Translator Pro
+              {{ $t('translator.hero.title') }}
             </span>
           </h1>
           <p class="text-base sm:text-lg text-blue-200/80 font-display tracking-wide animate-fade-in-delay mb-6">
-            Professional-grade translation with context awareness
+            {{ $t('translator.hero.subtitle') }}
           </p>
         </div>
         <!-- Translation mode selector grid -->
@@ -381,7 +381,7 @@ onUnmounted(() => {
                 <textarea
                   v-model="sourceText"
                   class="w-full h-32 sm:h-40 md:h-48 bg-slate-800 border border-blue-500 rounded-lg p-2 text-white resize-none focus:outline-none focus:ring-1 focus:ring-cyan-400/30 text-sm shadow translation-input-area"
-                  placeholder="Enter text to translate..."
+                  :placeholder="$t('translator.input.placeholder')"
                   aria-label="Source text"
                   style="min-height: 120px; max-height: 240px;"
                 ></textarea>
@@ -420,7 +420,7 @@ onUnmounted(() => {
                   </svg>
                   <span v-if="showCopied" 
                         class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-cyan-500 text-white px-2 py-1 rounded text-xs whitespace-nowrap">
-                    Copied!
+                    {{ $t('translator.buttons.copied') }}
                   </span>
                 </button>
               </div>
@@ -436,7 +436,7 @@ onUnmounted(() => {
                     <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
                   </div>
                   <div v-else>
-                    {{ translatedText || 'Translation will appear here...' }}
+                    {{ translatedText || $t('translator.output.placeholder') }}
                   </div>
                 </SimpleBar>
               </div>
@@ -454,10 +454,10 @@ onUnmounted(() => {
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
-            Swap Languages
+            {{ $t('translator.buttons.swapLanguages') }}
           </button>
           <!-- Translate button -->
-          <Tooltip v-if="translationMode === null" text="Select a translation mode first." position="top">
+          <Tooltip v-if="translationMode === null" :text="$t('translator.tooltips.selectMode')" position="top">
             <span class="w-full sm:w-auto">
               <button
                 class="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400/30 opacity-50 cursor-not-allowed"
@@ -466,7 +466,7 @@ onUnmounted(() => {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                 </svg>
-                Translate
+                {{ $t('translator.buttons.translate') }}
               </button>
             </span>
           </Tooltip>
@@ -479,10 +479,10 @@ onUnmounted(() => {
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
             </svg>
-            Translate
+            {{ $t('translator.buttons.translate') }}
           </button>
           <!-- Translate & Speak button (with tooltip if not available or no mode) -->
-          <Tooltip v-if="translationMode === null" text="Select a translation mode first." position="top">
+          <Tooltip v-if="translationMode === null" :text="$t('translator.tooltips.selectMode')" position="top">
             <span class="w-full sm:w-auto">
               <button
                 class="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 bg-cyan-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400/30 opacity-50 cursor-not-allowed"
@@ -491,11 +491,11 @@ onUnmounted(() => {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 012.728-2.728" />
                 </svg>
-                Translate & Speak
+                {{ $t('translator.buttons.translateAndSpeak') }}
               </button>
             </span>
           </Tooltip>
-          <Tooltip v-else-if="!canSpeak" text="Audio is not available for this language." position="top">
+          <Tooltip v-else-if="!canSpeak" :text="$t('translator.tooltips.audioNotAvailable')" position="top">
             <span class="w-full sm:w-auto">
               <button
                 class="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 bg-cyan-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400/30 opacity-50 cursor-not-allowed"
@@ -504,7 +504,7 @@ onUnmounted(() => {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 012.728-2.728" />
                 </svg>
-                Translate & Speak
+                {{ $t('translator.buttons.translateAndSpeak') }}
               </button>
             </span>
           </Tooltip>
@@ -517,7 +517,7 @@ onUnmounted(() => {
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 012.728-2.728" />
             </svg>
-            {{ isGeneratingVoice ? 'Generating Voice...' : 'Translate & Speak' }}
+            {{ isGeneratingVoice ? $t('translator.buttons.generatingVoice') : $t('translator.buttons.translateAndSpeak') }}
           </button>
         </div>
         <!-- Audio player for generated voice (if available) -->
@@ -558,7 +558,7 @@ onUnmounted(() => {
                 ></audio>
               </div>
             </div>
-            <span class="text-xs text-cyan-200 mt-3 tracking-wide font-medium">Listen to the AI-generated pronunciation</span>
+            <span class="text-xs text-cyan-200 mt-3 tracking-wide font-medium">{{ $t('translator.audio.listenToPronunciation') }}</span>
           </div>
         </div>
       </div>
@@ -574,15 +574,15 @@ onUnmounted(() => {
           <svg class="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
           </svg>
-          <h2 class="text-xl sm:text-2xl font-bold text-white">TruthLens Translator Pro</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">{{ $t('translator.info.title') }}</h2>
         </div>
-        <p class="text-slate-200 mb-3 text-base">Break language barriers and verify content worldwide. Translator Pro lets you:</p>
+        <p class="text-slate-200 mb-3 text-base">{{ $t('translator.info.description') }}</p>
         <ul class="list-disc list-inside text-slate-300 mb-3 text-base">
-          <li>Translate articles, quotes, and documents</li>
-          <li>Preserve context, tone, and intended meaning</li>
-          <li>Instantly switch between 50+ languages</li>
+          <li>{{ $t('translator.info.features.translateArticles') }}</li>
+          <li>{{ $t('translator.info.features.preserveContext') }}</li>
+          <li>{{ $t('translator.info.features.switchLanguages') }}</li>
         </ul>
-        <p class="text-slate-200 text-base">Empower your research and fact-checking with advanced, context-aware translation.</p>
+        <p class="text-slate-200 text-base">{{ $t('translator.info.empowerResearch') }}</p>
       </div>
     </div>
   </div>

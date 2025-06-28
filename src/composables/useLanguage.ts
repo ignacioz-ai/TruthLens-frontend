@@ -1,0 +1,57 @@
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+export function useLanguage() {
+  const { locale } = useI18n()
+  
+  // Idiomas disponibles
+  const availableLanguages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'pt', name: 'Português', flag: '🇧🇷' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' }
+  ]
+
+  // Idioma actual
+  const currentLanguage = computed(() => {
+    return availableLanguages.find(lang => lang.code === locale.value) || availableLanguages[0]
+  })
+
+  // Cambiar idioma
+  const changeLanguage = (languageCode: string) => {
+    locale.value = languageCode
+    localStorage.setItem('preferred-language', languageCode)
+    
+    // Para idiomas RTL
+    document.documentElement.dir = languageCode === 'ar' ? 'rtl' : 'ltr'
+    document.documentElement.lang = languageCode
+  }
+
+  // Inicializar idioma desde localStorage
+  const initializeLanguage = () => {
+    const savedLanguage = localStorage.getItem('preferred-language')
+    if (savedLanguage && availableLanguages.some(lang => lang.code === savedLanguage)) {
+      changeLanguage(savedLanguage)
+    } else {
+      // Detectar idioma del navegador
+      const browserLanguage = navigator.language.split('-')[0]
+      const supportedLanguage = availableLanguages.find(lang => lang.code === browserLanguage)
+      if (supportedLanguage) {
+        changeLanguage(browserLanguage)
+      }
+    }
+  }
+
+  return {
+    availableLanguages,
+    currentLanguage,
+    changeLanguage,
+    initializeLanguage
+  }
+} 

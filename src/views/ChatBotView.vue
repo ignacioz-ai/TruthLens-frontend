@@ -2,7 +2,7 @@
   <div class="min-h-screen flex flex-col text-white animate-fade-in-up">
     <div class="flex-1 flex flex-col md:justify-center items-center pt-16 md:pt-20 pb-12 md:pb-12 px-2 md:px-4">
       <div class="w-full max-w-4xl h-[80vh] max-h-[700px] bg-slate-800/90 rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 border border-white/10 flex flex-col">
-        <h1 class="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">TruthLens Chat Assistant</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">{{ $t('chatbot.hero.title') }}</h1>
         
         <!-- Messages -->
         <div
@@ -101,7 +101,7 @@
               ref="inputRef"
               v-model="userInput"
               type="text"
-              placeholder="Type your message or question here..."
+              :placeholder="$t('chatbot.input.placeholder')"
               class="w-full flex-1 bg-slate-800/80 text-white rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-cyan-400/40 border border-cyan-400/15 placeholder-blue-200/60 transition-all duration-200 hover:border-cyan-400/25 h-12 shadow-sm chat-input"
               :disabled="isLoading"
               @focus="handleInputFocus"
@@ -119,7 +119,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 20 20" stroke="currentColor">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>
                 </svg>
-                <span class="text-xs mt-1">Send</span>
+                <span class="text-xs mt-1">{{ $t('chatbot.buttons.send') }}</span>
               </button>
               <button
                 type="button"
@@ -132,7 +132,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <span class="text-xs mt-1">Verify</span>
+                <span class="text-xs mt-1">{{ $t('chatbot.buttons.verify') }}</span>
               </button>
             </div>
           </form>
@@ -145,15 +145,15 @@
           <svg class="w-8 h-8 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
-          <h2 class="text-xl sm:text-2xl font-bold text-white">TruthLens Assistant</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">{{ $t('chatbot.info.title') }}</h2>
         </div>
-        <p class="text-slate-200 mb-3">Use this interactive space to chat directly with Clara. You can ask:</p>
+        <p class="text-slate-200 mb-3">{{ $t('chatbot.info.description') }}</p>
         <ul class="list-disc list-inside text-slate-300 mb-3">
-          <li>"Is this article biased?"</li>
-          <li>"Was this image manipulated?"</li>
-          <li>"Can you verify the source of this post?"</li>
+          <li>{{ $t('chatbot.info.examples.isThisArticleBiased') }}</li>
+          <li>{{ $t('chatbot.info.examples.wasThisImageManipulated') }}</li>
+          <li>{{ $t('chatbot.info.examples.canYouVerifySource') }}</li>
         </ul>
-        <p class="text-slate-200">Clara will deliver immediate and structured analysis using cutting-edge AI — empowering you to think for yourself.</p>
+        <p class="text-slate-200">{{ $t('chatbot.info.claraWillDeliver') }}</p>
         <ul class="list-disc list-inside text-slate-400 mt-4 text-sm bg-slate-800/80 rounded-xl p-4 shadow-lg border border-cyan-400/20">
           <li class="flex items-center gap-3 mb-2">
             <button class="btn-inset flex items-center justify-center w-10 h-10 bg-slate-800 border border-cyan-400/40 rounded-lg mr-2 opacity-90 shadow-md">
@@ -161,14 +161,16 @@
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>
               </svg>
             </button>
-            <span class="font-semibold text-white/90"><strong>Send:</strong></span> Submit your message for standard analysis.</li>
+            <span class="font-semibold text-white/90"><strong>{{ $t('chatbot.info.features.send') }}:</strong> {{ $t('chatbot.info.features.sendDescription') }}</span>
+          </li>
           <li class="flex items-center gap-3">
             <button class="btn-inset flex items-center justify-center w-10 h-10 bg-slate-800 border border-cyan-400/40 rounded-lg mr-2 opacity-90 shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
-            <span class="font-semibold text-white/90"><strong>Verify with sources:</strong></span> Fact-check using live web search (RAG).</li>
+            <span class="font-semibold text-white/90"><strong>{{ $t('chatbot.info.features.verify') }}:</strong> {{ $t('chatbot.info.features.verifyDescription') }}</span>
+          </li>
         </ul>
       </div>
     </div>

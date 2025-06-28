@@ -15,14 +15,14 @@
         <!-- Main Headlines -->
         <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in-up">
           <span class="bg-gradient-to-r from-cyan-300 via-blue-500 to-cyan-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
-            TruthLens doesn't follow the headlines.
+            {{ $t('landing.hero.title') }}
           </span>
           <br>
-          <span class="text-white">It questions them.</span>
+          <span class="text-white">{{ $t('landing.hero.subtitle') }}</span>
         </h1>
 
         <p class="text-lg md:text-xl text-blue-200/80 font-light mb-16 max-w-4xl mx-auto leading-relaxed animate-fade-in-up delay-200">
-          Uncover hidden bias. Spot emotional language. Detect fake and AI-generated content.
+          {{ $t('landing.hero.description') }}
         </p>
 
         <!-- Primary CTA -->
@@ -32,7 +32,7 @@
             class="group px-10 py-5 card-active rounded-2xl border border-cyan-400/50 shadow-lg text-white font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/25 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-cyan-400 relative overflow-hidden"
           >
             <span class="relative z-10 flex items-center justify-center">
-              Try the Demo
+              {{ $t('landing.hero.tryDemo') }}
             </span>
             <div class="absolute inset-0 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-2xl opacity-30 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
@@ -52,14 +52,14 @@
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
           <h2 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">
-            Critical Media Intelligence, Powered by AI
+            {{ $t('landing.features.title') }}
           </h2>
           <p class="text-sm md:text-base text-slate-300 max-w-3xl mx-auto mb-1">
-            Analyze, translate, and verify content—across text, images, and narratives with advanced AI tools.
+            {{ $t('landing.features.subtitle') }}
           </p>
           <div class="flex items-center justify-center gap-2 mt-1 text-xs font-medium">
             <span class="px-1 py-0.5 rounded bg-cyan-900/60 text-cyan-200 tracking-wide" style="letter-spacing:0.04em;">
-              Multilingual support for every tool (35+ languages)
+              {{ $t('landing.features.multilingualBadge') }}
             </span>
           </div>
         </div>
@@ -72,9 +72,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">Break Down the Narrative</h3>
+            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">
+              {{ $t('landing.tools.textAnalyzer.title') }}
+            </h3>
             <p class="text-slate-300 leading-relaxed">
-              Analyze headlines, articles, and statements. Spot bias, emotional tone, and credibility with visual breakdowns that expose the message beneath the surface.
+              {{ $t('landing.tools.textAnalyzer.description') }}
             </p>
           </RouterLink>
 
@@ -85,9 +87,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
               </svg>
             </div>
-            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">Understand It in Your Language</h3>
+            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">
+              {{ $t('landing.tools.translator.title') }}
+            </h3>
             <p class="text-slate-300 leading-relaxed">
-              Translate with cultural intelligence. 35+ languages, context-aware. Not just words, meanings that matter.
+              {{ $t('landing.tools.translator.description') }}
             </p>
           </RouterLink>
 
@@ -98,9 +102,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">Reveal What Images Hide</h3>
+            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">
+              {{ $t('landing.tools.imageAnalysis.title') }}
+            </h3>
             <p class="text-slate-300 leading-relaxed">
-              Detect AI-generated visuals, deepfakes, and digital manipulation. Because truth is also visual.
+              {{ $t('landing.tools.imageAnalysis.description') }}
             </p>
           </RouterLink>
 
@@ -111,9 +117,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">Ask the Truth Itself</h3>
+            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-cyan-300 transition-colors">
+              {{ $t('landing.tools.assistant.title') }}
+            </h3>
             <p class="text-slate-300 leading-relaxed">
-              TruthLens Assistant is more than a chatbot. It cross-checks facts, translates context, and questions everything. It doesn't echo the news, it questions it.
+              {{ $t('landing.tools.assistant.description') }}
             </p>
           </RouterLink>
 
@@ -125,9 +133,11 @@
               <div class="clara-inner-circle"></div>
             </div>
             <div class="flex-1">
-              <h3 class="text-2xl md:text-3xl font-bold mb-2 text-cyan-300 group-hover:text-cyan-200 transition-colors">Meet Clara, Your Voice of Reason</h3>
+              <h3 class="text-2xl md:text-3xl font-bold mb-2 text-cyan-300 group-hover:text-cyan-200 transition-colors">
+                {{ $t('landing.tools.clara.title') }}
+              </h3>
               <p class="text-slate-300 text-lg mb-0">
-                A multilingual voice guide that helps you navigate media with clarity. Clara listens, explains, and empowers your critical view, just by talking.
+                {{ $t('landing.tools.clara.description') }}
               </p>
             </div>
           </a>
@@ -151,32 +161,32 @@
               <span class="text-2xl font-bold text-white">TruthLens</span>
             </div>
             <p class="text-slate-300 leading-relaxed">
-              AI-powered media analysis platform helping you navigate the complex world of modern information.
+              {{ $t('landing.footer.description') }}
             </p>
           </div>
 
           <!-- Quick Links -->
           <div class="space-y-4">
-            <h3 class="text-lg font-semibold text-white">Quick Links</h3>
+            <h3 class="text-lg font-semibold text-white">{{ $t('landing.footer.quickLinks') }}</h3>
             <div class="grid grid-cols-2 gap-2">
               <RouterLink to="/analyze" class="block text-slate-300 hover:text-cyan-400 transition-colors">
-                Text Analyzer
+                {{ $t('landing.footer.textAnalyzer') }}
               </RouterLink>
               <RouterLink to="/translator" class="block text-slate-300 hover:text-cyan-400 transition-colors">
-                Translator Pro
+                {{ $t('landing.footer.translatorPro') }}
               </RouterLink>
               <RouterLink to="/image-analysis" class="block text-slate-300 hover:text-cyan-400 transition-colors">
-                Image Analysis
+                {{ $t('landing.footer.imageAnalysis') }}
               </RouterLink>
               <RouterLink to="/voice-assistant" class="block text-slate-300 hover:text-cyan-400 transition-colors">
-                Voice Assistant
+                {{ $t('landing.footer.voiceAssistant') }}
               </RouterLink>
             </div>
           </div>
 
           <!-- Connect Section -->
           <div class="space-y-4">
-            <h3 class="text-lg font-semibold text-white">Connect</h3>
+            <h3 class="text-lg font-semibold text-white">{{ $t('landing.footer.connect') }}</h3>
             <div class="space-y-3">
               <a 
                 :href="getBoltUrl()" 
@@ -187,7 +197,7 @@
                 <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                <span>Built with Bolt</span>
+                <span>{{ $t('landing.footer.builtWithBolt') }}</span>
               </a>
             </div>
           </div>
@@ -201,14 +211,14 @@
               <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
               </svg>
-              <span class="text-cyan-400 font-medium">Created for the World's Largest Hackathon by Bolt</span>
+              <span class="text-cyan-400 font-medium">{{ $t('landing.footer.createdForHackathon') }}</span>
             </div>
           </div>
         </div>
 
         <!-- Copyright -->
         <div class="mt-8 pt-8 border-t border-white/10 text-center text-slate-400">
-          <p>&copy; 2025 TruthLens. Empowering critical thinking through AI.</p>
+          <p>{{ $t('landing.footer.copyright') }}</p>
         </div>
       </div>
     </footer>
@@ -216,7 +226,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import { FRONTEND_URL } from '../config/api';
 import { getBoltUrl } from '../config/environment';

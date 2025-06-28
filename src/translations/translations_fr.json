@@ -1,0 +1,564 @@
+{
+  "header": {
+    "home": "Accueil",
+    "analyze": "Analyser",
+    "imageAnalysis": "Analyse d'image",
+    "translatorPro": "Traducteur Pro",
+    "chatbot": "ChatBot",
+    "voiceChat": "Chat vocal",
+    "help": "Aide",
+    "madeWithBolt": "Créé avec Bolt"
+  },
+  "landing": {
+    "hero": {
+      "title": "TruthLens ne suit pas les titres.",
+      "subtitle": "Il les questionne.",
+      "description": "Révélez les biais cachés. Détectez le langage émotionnel. Identifiez le contenu faux et généré par IA.",
+      "tryDemo": "Essayer la démo"
+    },
+    "features": {
+      "title": "Intelligence médiatique critique, alimentée par l'IA",
+      "subtitle": "Analysez, traduisez et vérifiez le contenu — à travers le texte, les images et les récits avec des outils d'IA avancés.",
+      "multilingualBadge": "Support multilingue pour chaque outil"
+    },
+    "tools": {
+      "textAnalyzer": {
+        "title": "Décomposer le récit",
+        "description": "Analysez les titres, articles et déclarations. Détectez les biais, le ton émotionnel et la crédibilité avec des décompositions visuelles qui révèlent le message sous la surface."
+      },
+      "translator": {
+        "title": "Comprenez-le dans votre langue",
+        "description": "Traduisez avec l'intelligence culturelle. 35+ langues, conscient du contexte. Pas seulement des mots, des significations qui comptent."
+      },
+      "imageAnalysis": {
+        "title": "Révélez ce que cachent les images",
+        "description": "Détectez les visuels générés par IA, les deepfakes et la manipulation numérique. Parce que la vérité est aussi visuelle."
+      },
+      "assistant": {
+        "title": "Demandez à la vérité elle-même",
+        "description": "L'assistant TruthLens est plus qu'un chatbot. Il vérifie les faits, traduit le contexte et questionne tout. Il ne fait pas écho aux nouvelles, il les questionne."
+      },
+      "clara": {
+        "title": "Rencontrez Clara, votre voix de la raison",
+        "description": "Un guide vocal multilingue qui vous aide à naviguer dans les médias avec clarté. Clara écoute, explique et renforce votre vision critique, simplement en parlant."
+      }
+    },
+    "footer": {
+      "description": "Plateforme d'analyse médiatique alimentée par l'IA qui vous aide à naviguer dans le monde complexe de l'information moderne.",
+      "quickLinks": "Liens rapides",
+      "textAnalyzer": "Analyseur de texte",
+      "translatorPro": "Traducteur Pro",
+      "imageAnalysis": "Analyse d'image",
+      "voiceAssistant": "Assistant vocal",
+      "connect": "Se connecter",
+      "builtWithBolt": "Créé avec Bolt",
+      "createdForHackathon": "Créé pour le plus grand hackathon du monde par Bolt",
+      "copyright": "© 2025 TruthLens. Renforcer la pensée critique grâce à l'IA."
+    }
+  },
+  "textAnalysis": {
+    "title": "TruthLens",
+    "subtitle": "Analysez les articles de presse pour les biais et la crédibilité",
+    "hero": {
+      "subtitle": "Analysez les articles de presse pour les biais et la crédibilité"
+    },
+    "infoCard": {
+      "title": "Analyse de texte",
+      "description": "Comprenez comment le contenu médiatique façonne la perception. Collez n'importe quel article de presse ou déclaration écrite et TruthLens détectera :",
+      "features": [
+        "Langage émotionnel et sentiment",
+        "Biais idéologiques et cadrage manipulateur",
+        "Signaux de crédibilité des sources",
+        "Indicateurs de cohérence factuelle"
+      ],
+      "footer": "Basé sur des critères validés de DOCA (Base de données des variables pour l'analyse de contenu), votre rapport inclut un score de biais, une évaluation de crédibilité et des suggestions pour vérifier ou contraster l'information."
+    },
+    "info": {
+      "title": "Analyse de texte",
+      "description": "Comprenez comment le contenu médiatique façonne la perception. Collez n'importe quel article de presse ou déclaration écrite et TruthLens détectera :",
+      "features": {
+        "emotionalLanguage": "Langage émotionnel et sentiment",
+        "ideologicalBias": "Biais idéologiques et cadrage manipulateur",
+        "sourceCredibility": "Signaux de crédibilité des sources",
+        "factualConsistency": "Indicateurs de cohérence factuelle"
+      },
+      "basedOnValidatedCriteria": "Basé sur des critères validés de DOCA (Base de données des variables pour l'analyse de contenu), votre rapport inclut un score de biais, une évaluation de crédibilité et des suggestions pour vérifier ou contraster l'information."
+    },
+    "form": {
+      "placeholder": "Écrivez ou collez votre texte ici (8000 caractères max)...",
+      "charCount": "{count} / 8000",
+      "analyzeButton": "Analyser le texte",
+      "exampleButton": "Voir l'exemple"
+    }
+  },
+  "imageAnalysis": {
+    "title": "Analyse d'image",
+    "subtitle": "Téléchargez une image pour analyser son authenticité en utilisant des techniques d'IA avancées.",
+    "hero": {
+      "title": "Analyse d'image",
+      "subtitle": "Détectez les images générées par IA, la manipulation numérique et l'intégrité des métadonnées."
+    },
+    "upload": {
+      "clickToUpload": "Cliquez pour télécharger",
+      "orDragAndDrop": "ou glissez-déposez",
+      "fileTypes": "PNG, JPG ou JPEG (MAX. 10MB)",
+      "imageLoaded": "Image chargée",
+      "uploadImage": "Téléchargez l'image en cliquant ou en glissant-déposant"
+    },
+    "results": {
+      "aiProbability": "Probabilité IA",
+      "probabilityText": "probabilité d'être généré par IA",
+      "visualClues": "Indices visuels",
+      "spectralAnalysis": "Analyse spectrale",
+      "metadataAnalysis": "Analyse des métadonnées",
+      "finalVerdict": "Verdict final"
+    },
+    "errors": {
+      "analyzeError": "Erreur lors de l'analyse de l'image. Veuillez réessayer."
+    },
+    "infoCard": {
+      "title": "Analyse d'image",
+      "description": "Vérifiez si une image est réelle ou générée artificiellement. Téléchargez n'importe quelle photo ou capture d'écran et TruthLens évaluera :",
+      "features": [
+        "Probabilité d'imagerie générée par IA et deepfake",
+        "Indices de manipulation et d'altération numérique",
+        "Intégrité des métadonnées et anomalies visuelles"
+      ],
+      "footer": "L'outil fournit un score de confiance et une décomposition transparente des risques d'authenticité."
+    },
+    "info": {
+      "title": "Analyse d'image",
+      "description": "Comprenez comment les images peuvent être manipulées ou générées par IA. Téléchargez n'importe quelle image et TruthLens vérifiera :",
+      "features": {
+        "aiGeneratedImagery": "Détection d'imagerie générée par IA",
+        "digitalTampering": "Manipulation et altération numérique",
+        "metadataIntegrity": "Intégrité des métadonnées et anomalies"
+      },
+      "toolProvides": "Cet outil fournit un verdict sur l'authenticité, met en évidence les caractéristiques suspectes et offre des recommandations pour une vérification ultérieure."
+    }
+  },
+  "translator": {
+    "title": "TruthLens Traducteur Pro",
+    "subtitle": "Traduction de niveau professionnel avec conscience du contexte",
+    "hero": {
+      "title": "TruthLens Traducteur Pro",
+      "subtitle": "Traduction de niveau professionnel avec conscience du contexte"
+    },
+    "input": {
+      "placeholder": "Entrez le texte à traduire..."
+    },
+    "output": {
+      "placeholder": "La traduction apparaîtra ici..."
+    },
+    "buttons": {
+      "swapLanguages": "Échanger les langues",
+      "translate": "Traduire",
+      "translateAndSpeak": "Traduire et parler",
+      "copied": "Copié !",
+      "generatingVoice": "Génération de la voix..."
+    },
+    "tooltips": {
+      "selectMode": "Sélectionnez d'abord un mode de traduction.",
+      "audioNotAvailable": "L'audio n'est pas disponible pour cette langue."
+    },
+    "audio": {
+      "listenToPronunciation": "Écouter la prononciation"
+    },
+    "modes": {
+      "literal": {
+        "title": "Littéral",
+        "description": "Traduction mot à mot préservant la structure originale"
+      },
+      "idiomatic": { "title": "Idiomatique", "description": "" },
+      "academic": { "title": "Académique", "description": "" },
+      "legal": { "title": "Juridique", "description": "" },
+      "technical": { "title": "Technique", "description": "" },
+      "plain": { "title": "Langage simple", "description": "" },
+      "journalistic": { "title": "Journalistique", "description": "" },
+      "creative": { "title": "Créatif", "description": "" }
+    },
+    "interface": {
+      "mainLanguages": "Langues principales",
+      "experimentalLanguages": "Langues expérimentales",
+      "selectSourceLanguage": "Sélectionner la langue source",
+      "selectTargetLanguage": "Sélectionner la langue cible",
+      "enterTextToTranslate": "Entrez le texte à traduire...",
+      "translationWillAppear": "La traduction apparaîtra ici...",
+      "clearText": "Effacer le texte",
+      "copyTranslation": "Copier la traduction",
+      "selectModeFirst": "Sélectionnez d'abord un mode de traduction.",
+      "audioNotAvailable": "L'audio n'est pas disponible pour cette langue."
+    },
+    "form": {
+      "sourcePlaceholder": "Entrez le texte à traduire...",
+      "targetPlaceholder": "La traduction apparaîtra ici...",
+      "swapLanguages": "Échanger les langues",
+      "translateButton": "Traduire",
+      "translateAndSpeakButton": "Traduire et parler"
+    },
+    "info": {
+      "title": "TruthLens Traducteur Pro",
+      "description": "Brisez les barrières linguistiques et vérifiez le contenu dans le monde entier. Le Traducteur Pro vous permet de :",
+      "features": {
+        "translateArticles": "Traduire des articles, citations et documents",
+        "preserveContext": "Préserver le contexte, le ton et le sens voulu",
+        "switchLanguages": "Basculer instantanément entre 50+ langues"
+      },
+      "empowerResearch": "Renforcez votre recherche et vérification des faits avec une traduction avancée et consciente du contexte."
+    }
+  },
+  "voiceChat": {
+    "clara": {
+      "title": "Clara, votre guide critique",
+      "description": "Clara est la voix de TruthLens — votre compagne pour explorer la plateforme et comprendre ce que vous voyez.",
+      "explanation": "Elle n'effectue pas d'analyse, mais vous aide à l'interpréter à travers une lentille critique. Inspirée par la théorie du discours et des cadres comme DOCA, Clara vous aide à :",
+      "features": [
+        "Comprendre comment les biais, le ton émotionnel et la manipulation apparaissent dans le langage",
+        "Réfléchir aux résultats présentés à l'écran",
+        "Naviguer dans chaque outil avec clarté et profondeur",
+        "Développer une perspective plus critique sur les médias et le langage"
+      ],
+      "footer": "Clara n'est pas là pour vous dire quoi penser — elle est là pour vous aider à penser par vous-même."
+    },
+    "hero": {
+      "title": "Agent vocal TruthLens",
+      "subtitle": "Chattez avec <a href=\"#\">Clara</a>. Votre IA multilingue en temps réel de TruthLens."
+    },
+    "callButton": "Appeler Clara",
+    "info": {
+      "title": "Clara, votre guide critique",
+      "description": "Clara est la voix de TruthLens — votre compagne pour explorer la plateforme et donner du sens à ce que vous voyez.",
+      "sheDoesntPerform": "Clara n'effectue pas d'analyses, mais elle vous aide à interpréter les résultats avec un regard critique.",
+      "features": {
+        "understandBias": "Comprendre comment les biais, le ton émotionnel et la manipulation apparaissent dans le langage",
+        "reflectOnResults": "Découvrir le 'pourquoi' derrière chaque outil d'analyse et ses résultats",
+        "navigateTools": "Développer une perspective plus critique sur les médias et le langage",
+        "developCriticalPerspective": ""
+      },
+      "claraIsntHere": "L'objectif de Clara est de vous aider à penser par vous-même."
+    }
+  },
+  "voiceAssistant": {
+    "title": "Agent vocal TruthLens",
+    "subtitle": "Chattez avec Clara. Votre IA multilingue en temps réel de TruthLens.",
+    "hero": {
+      "title": "Agent vocal TruthLens",
+      "subtitle": "Chattez avec",
+      "description": "Votre IA multilingue en temps réel de TruthLens."
+    },
+    "buttons": {
+      "callClara": "Appeler Clara",
+      "tapToTalk": "Appuyez pour parler",
+      "tryAgain": "Réessayer"
+    },
+    "permissions": {
+      "title": "Accès au microphone requis",
+      "description": "Pour utiliser l'assistant vocal, veuillez activer l'accès au microphone dans les paramètres de votre navigateur.",
+      "enableMicrophone": "Activer le microphone"
+    },
+    "states": {
+      "connecting": "Connexion...",
+      "listening": "Écoute...",
+      "responding": "Clara répond...",
+      "claraResponding": "Clara répond..."
+    },
+    "instructions": {
+      "tapToEnd": "Appuyez pour terminer la conversation.",
+      "tapAndHold": "Appuyez et maintenez pour parler."
+    },
+    "info": {
+      "title": "Clara, votre guide critique",
+      "description": "Clara est la voix de TruthLens — votre compagne pour explorer la plateforme et comprendre ce que vous voyez.",
+      "features": {
+        "understandBias": "Comprendre comment les biais, le ton émotionnel et la manipulation apparaissent dans le langage",
+        "uncoverWhy": "Révéler le 'pourquoi' derrière chaque outil d'analyse et ses résultats",
+        "developCriticalPerspective": "Développer une perspective plus critique sur les médias et le langage"
+      },
+      "clarasGoal": "L'objectif de Clara est de vous aider à penser par vous-même."
+    }
+  },
+  "chatbot": {
+    "title": "Assistant de chat TruthLens",
+    "placeholder": "Tapez votre message ou question ici...",
+    "send": "Envoyer",
+    "verify": "Vérifier",
+    "sendTooltip": "Soumettez votre message pour une analyse standard.",
+    "verifyTooltip": "Vérification des faits avec recherche web en direct (RAG).",
+    "infoCard": {
+      "title": "Assistant TruthLens",
+      "description": "Utilisez cet espace interactif pour chatter directement avec Clara. Vous pouvez demander :",
+      "examples": [
+        "\"Cet article est-il biaisé ?\"",
+        "\"Cette image a-t-elle été manipulée ?\"",
+        "\"Pouvez-vous vérifier la source de cette publication ?\""
+      ],
+      "footer": "Clara fournira une analyse immédiate et structurée utilisant l'IA de pointe — vous renforçant pour penser par vous-même."
+    },
+    "hero": {
+      "title": "Assistant de chat TruthLens"
+    },
+    "actions": {
+      "analyzeBias": "Analyser pour les biais",
+      "sourceCredibility": "Crédibilité de la source",
+      "detectEmotionalManipulation": "Détecter la manipulation émotionnelle"
+    },
+    "input": {
+      "placeholder": "Tapez votre message ou question ici..."
+    },
+    "buttons": {
+      "send": "Envoyer",
+      "verify": "Vérifier"
+    },
+    "info": {
+      "title": "Assistant TruthLens",
+      "description": "Utilisez cet espace interactif pour chatter directement avec Clara. Vous pouvez demander :",
+      "examples": {
+        "isThisArticleBiased": "\"Cet article est-il biaisé ?\"",
+        "wasThisImageManipulated": "\"Cette image a-t-elle été manipulée ?\"",
+        "canYouVerifySource": "\"Pouvez-vous vérifier la source de cette publication ?\""
+      },
+      "claraWillDeliver": "Clara fournira une analyse immédiate et structurée utilisant l'IA de pointe — vous renforçant pour penser par vous-même.",
+      "features": {
+        "send": "Envoyer",
+        "sendDescription": "Soumettez votre message pour une analyse standard.",
+        "verify": "Vérifier avec les sources",
+        "verifyDescription": "Vérification des faits avec recherche web en direct (RAG)."
+      }
+    }
+  },
+  "analysisForm": {
+    "placeholder": "Collez ou tapez votre texte ici...",
+    "analyzeText": "Analyser le texte",
+    "analyzing": "Analyse en cours...",
+    "textTooLong": "Le texte est trop long. Veuillez le limiter à 8000 caractères.",
+    "analyzeError": "Une erreur s'est produite lors de l'analyse du texte. Veuillez réessayer."
+  },
+  "analysisVisual": {
+    "frames": {
+      "crisis": "Crise : Présente le problème comme urgent, alarmant ou en escalade.",
+      "conflict": "Conflit : Met l'accent sur les disputes, confrontations ou désaccords.",
+      "humanInterest": "Intérêt humain : Met en évidence l'impact humain ou les histoires personnelles.",
+      "responsibility": "Responsabilité : Attribue la responsabilité ou le blâme à des acteurs spécifiques.",
+      "morality": "Moralité : Fait appel aux valeurs éthiques ou morales.",
+      "solution": "Solution : Propose ou discute des solutions au problème.",
+      "economicConsequences": "Conséquences économiques : Met l'accent sur l'impact financier.",
+      "security": "Sécurité : Se concentre sur les risques ou menaces de sécurité.",
+      "none": "Aucune stratégie de cadrage prédominante détectée."
+    }
+  },
+  "infoSection": {
+    "title": "Comprendre TruthLens",
+    "description": "TruthLens est une boîte à outils d'investigation alimentée par l'IA conçue pour vous aider à évaluer de manière critique la crédibilité des textes, images et récits. Elle combine la PNL avancée, l'analyse d'image médico-légale et la traduction multilingue pour renforcer votre raisonnement dans un monde façonné par le contenu manipulé.",
+    "close": "Fermer la section d'information",
+    "sections": {
+      "textAnalysis": {
+        "title": "Analyse de texte",
+        "subtitle": "Examen critique du langage des articles et extraits",
+        "description": "Collez n'importe quel article ou passage (jusqu'à 8 000 caractères) et TruthLens générera un rapport analytique structuré alimenté par le raisonnement LLM, les heuristiques personnalisées et l'ingénierie de prompts consciente du discours.",
+        "reportIncludes": "Le rapport inclut :",
+        "features": [
+          "Probabilité de fausses nouvelles (%) : Estimée basée sur les modèles de langage spéculatifs, les verbes de couverture et le score de densité factuelle.",
+          "Détection de biais politique : Analyse l'inclinaison idéologique en utilisant l'analyse de sentiment envers les acteurs politiques, le cadrage linguistique et l'alignement avec des sujets ou agendas connus.",
+          "Classification du ton émotionnel : Classifie le ton global de l'article comme neutre, alarmiste ou persuasif en utilisant des modèles hybrides lexique-contexte.",
+          "Moteur de recommandation du lecteur : Suggère comment aborder l'article (ex. vérifier, recouper ou rejeter) basé sur une agrégation pondérée des métriques de biais et de ton.",
+          "Classification du style narratif : Segmente l'article en utilisant un classificateur zero-shot en :",
+          "Cartographie émotionnelle psychologique : Détecte les émotions de base telles que la colère, la peur, la joie, la tristesse, le dégoût, la confiance, l'anticipation et la surprise. Basée sur la roue des émotions de Plutchik et le tagging basé sur les transformateurs, cette analyse révèle les sous-entendus émotionnels qui animent le récit."
+        ],
+        "styleTypes": [
+          "Objectif",
+          "Subjectif",
+          "Spéculatif",
+          "Émotif",
+          "Clickbait"
+        ]
+      },
+      "contentAnalysis": {
+        "title": "Analyse de contenu et de cadrage (basée sur DOCA)",
+        "description": "TruthLens intègre un modèle inspiré de DOCA — Discours, Objectivité, Certitude et Affect — pour aller au-delà de la classification de texte superficielle.",
+        "features": [
+          "Détection de sujet : Identifie le thème principal de l'article (ex. politique, économie, sécurité).",
+          "Analyse de cadrage : Extrait les cadres discursifs dominants qui façonnent l'article, tels que :",
+          "Décomposition du style : Analyse combien de l'article est :"
+        ],
+        "frames": [
+          "Crise",
+          "Conséquences économiques",
+          "Sécurité"
+        ],
+        "styleBreakdown": [
+          "Objectif",
+          "Subjectif",
+          "Spéculatif",
+          "Émotif",
+          "Clickbait"
+        ]
+      },
+      "imageAnalysis": {
+        "title": "Analyse d'image",
+        "subtitle": "Détection d'image générée par IA via des techniques médico-légales",
+        "description": "Téléchargez n'importe quelle image pour évaluer si elle a pu être générée ou manipulée par IA.",
+        "analysisIncludes": "L'analyse médico-légale inclut :",
+        "features": [
+          "Détection d'artefacts visuels : Identifie les anomalies visuelles telles que le texte déformé, la symétrie non naturelle, l'éclairage incohérent ou les irrégularités de texture de peau.",
+          "Analyse spectrale (FFT) : Applique la transformation de Fourier rapide pour détecter les distorsions du domaine fréquentiel typiquement trouvées dans les médias synthétiques.",
+          "Inspection des métadonnées EXIF : Parse les métadonnées intégrées pour détecter les champs manquants, les incohérences de caméra ou les traces de rendu IA."
+        ]
+      },
+      "translator": {
+        "title": "Traducteur Pro",
+        "subtitle": "Moteur de traduction multilingue conscient du style",
+        "description": "Traduisez n'importe quel texte dans 35+ langues, incluant le support expérimental pour les langues indigènes comme le guarani, le quechua et l'aymara.",
+        "supportedStyles": "Styles de traduction supportés :",
+        "styles": [
+          "Littéral",
+          "Idiomatique",
+          "Académique",
+          "Juridique",
+          "Technique",
+          "Journalistique",
+          "Langage simple",
+          "Créatif"
+        ],
+        "poweredBy": "Alimenté par des LLMs affinés pour des tâches spécifiques au domaine.",
+        "experimentalWarning": "⚠️ Le support des langues indigènes est expérimental et peut nécessiter une révision culturelle."
+      },
+      "chatbot": {
+        "title": "Chatbot IA",
+        "subtitle": "Explication interactive et vérification des faits",
+        "description": "Un assistant multilingue alimenté par LLM + RAG qui peut interpréter à la fois le contenu original et le rapport généré. Posez des questions comme :",
+        "examples": [
+          "\"Quelle partie du texte est du clickbait ?\""
+        ]
+      }
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "reset": "Réinitialiser",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "refresh": "Actualiser",
+    "download": "Télécharger",
+    "upload": "Télécharger",
+    "copy": "Copier",
+    "paste": "Coller",
+    "cut": "Couper",
+    "select": "Sélectionner",
+    "deselect": "Désélectionner",
+    "selectAll": "Tout sélectionner",
+    "clear": "Effacer",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "retry": "Réessayer",
+    "continue": "Continuer",
+    "skip": "Passer",
+    "finish": "Terminer",
+    "start": "Commencer",
+    "stop": "Arrêter",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "play": "Jouer",
+    "mute": "Muet",
+    "unmute": "Activer le son",
+    "volume": "Volume",
+    "settings": "Paramètres",
+    "preferences": "Préférences",
+    "profile": "Profil",
+    "account": "Compte",
+    "logout": "Déconnexion",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "signup": "S'inscrire",
+    "signin": "Se connecter",
+    "forgotPassword": "Mot de passe oublié ?",
+    "rememberMe": "Se souvenir de moi",
+    "keepMeSignedIn": "Rester connecté",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d'utilisation",
+    "contactUs": "Nous contacter",
+    "about": "À propos",
+    "help": "Aide",
+    "support": "Support",
+    "feedback": "Retour",
+    "reportBug": "Signaler un bug",
+    "featureRequest": "Demande de fonctionnalité",
+    "documentation": "Documentation",
+    "tutorial": "Tutoriel",
+    "guide": "Guide",
+    "faq": "FAQ",
+    "changelog": "Journal des modifications",
+    "version": "Version",
+    "build": "Build",
+    "release": "Version",
+    "beta": "Bêta",
+    "alpha": "Alpha",
+    "experimental": "Expérimental",
+    "deprecated": "Déprécié",
+    "unsupported": "Non supporté",
+    "maintenance": "Maintenance",
+    "offline": "Hors ligne",
+    "online": "En ligne",
+    "connected": "Connecté",
+    "disconnected": "Déconnecté",
+    "connecting": "Connexion...",
+    "disconnecting": "Déconnexion...",
+    "reconnecting": "Reconnexion...",
+    "connectionFailed": "Échec de connexion",
+    "connectionLost": "Connexion perdue",
+    "connectionRestored": "Connexion restaurée",
+    "networkError": "Erreur réseau",
+    "serverError": "Erreur serveur",
+    "timeout": "Délai d'attente",
+    "notFound": "Non trouvé",
+    "unauthorized": "Non autorisé",
+    "forbidden": "Interdit",
+    "badRequest": "Mauvaise requête",
+    "internalError": "Erreur interne du serveur",
+
+    "tooManyRequests": "Trop de requêtes",
+    "conflict": "Conflit",
+    "gone": "Parti",
+    "lengthRequired": "Longueur requise",
+    "preconditionFailed": "Échec de précondition",
+    "requestEntityTooLarge": "Entité de requête trop grande",
+    "requestUriTooLong": "URI de requête trop long",
+    "unsupportedMediaType": "Type de média non supporté",
+    "requestedRangeNotSatisfiable": "Plage demandée non satisfaisable",
+    "expectationFailed": "Échec d'attente",
+    "imATeapot": "Je suis une théière",
+    "misdirectedRequest": "Requête mal dirigée",
+    "unprocessableEntity": "Entité non traitable",
+    "locked": "Verrouillé",
+    "failedDependency": "Dépendance échouée",
+    "tooEarly": "Trop tôt",
+    "upgradeRequired": "Mise à niveau requise",
+    "preconditionRequired": "Précondition requise",
+    "requestHeaderFieldsTooLarge": "Champs d'en-tête de requête trop grands",
+    "unavailableForLegalReasons": "Indisponible pour des raisons légales",
+    "internalServerError": "Erreur interne du serveur",
+    "notImplemented": "Non implémenté",
+    "badGateway": "Mauvaise passerelle",
+    "serviceUnavailable": "Service indisponible",
+    "gatewayTimeout": "Délai d'attente de la passerelle",
+    "httpVersionNotSupported": "Version HTTP non supportée",
+    "variantAlsoNegotiates": "Variante négocie aussi",
+    "insufficientStorage": "Stockage insuffisant",
+    "loopDetected": "Boucle détectée",
+    "notExtended": "Non étendu",
+    "networkAuthenticationRequired": "Authentification réseau requise"
+  }
+} 

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import InfoSection from './InfoSection.vue';
+import LanguageSelector from './LanguageSelector.vue';
 import { RouterLink, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 // State management for help modal visibility and animation
 const showHelp = ref(false);
 const isClosing = ref(false);
 const route = useRoute();
 const openSidebar = ref(false);
+const { t } = useI18n();
 
 // Store original body overflow to restore it later
 const originalBodyOverflow = ref('');
@@ -19,14 +22,14 @@ interface NavLink {
   external?: boolean;
 }
 
-// Navigation links configuration
+// Navigation links configuration with translations
 const links: NavLink[] = [
-  { name: 'Home', href: '/landing' },
-  { name: 'Analyze', href: '/analyze' },
-  { name: 'Image Analysis', href: '/image-analysis' },
-  { name: 'Translator Pro', href: '/translator' },
-  { name: 'ChatBot', href: '/chatbot' },
-  { name: 'Voice Chat', href: '/voice-chat' }
+  { name: t('header.home'), href: '/landing' },
+  { name: t('header.analyze'), href: '/analyze' },
+  { name: t('header.imageAnalysis'), href: '/image-analysis' },
+  { name: t('header.translatorPro'), href: '/translator' },
+  { name: t('header.chatbot'), href: '/chatbot' },
+  { name: t('header.voiceChat'), href: '/voice-chat' }
 ];
 
 // Scroll lock management
@@ -129,11 +132,13 @@ const closeSidebarAndToggleHelp = () => {
             @click="toggleHelp"
             class="text-sm text-blue-200/80 hover:text-white transition-colors duration-200"
           >
-            Help
+            {{ $t('header.help') }}
           </button>
+          <!-- Language Selector -->
+          <LanguageSelector />
           <a href="https://bolt.new" target="_blank" rel="noopener noreferrer"
             class="flex items-center space-x-1 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 text-white text-sm font-medium hover:opacity-90 transition-opacity">
-            <span>Made with Bolt</span>
+            <span>{{ $t('header.madeWithBolt') }}</span>
           </a>
         </div>
         <!-- Mobile Hamburger -->
@@ -178,11 +183,15 @@ const closeSidebarAndToggleHelp = () => {
             @click="closeSidebarAndToggleHelp"
             class="block py-2 text-blue-200/80 hover:text-white transition-colors duration-200 w-full text-left"
           >
-            Help
+            {{ $t('header.help') }}
           </button>
+          <!-- Language Selector for Mobile -->
+          <div class="py-2">
+            <LanguageSelector />
+          </div>
           <a href="https://bolt.new" target="_blank" rel="noopener noreferrer"
             class="flex items-center space-x-1 px-3 py-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 text-white text-sm font-medium hover:opacity-90 transition-opacity w-full justify-center">
-            <span>Made with Bolt</span>
+            <span>{{ $t('header.madeWithBolt') }}</span>
           </a>
         </div>
         <div class="flex-1 bg-black bg-opacity-60" @click="toggleSidebar(false)"></div>
