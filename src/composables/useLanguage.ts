@@ -3,7 +3,8 @@ import { useI18n } from 'vue-i18n'
 import { loadLocaleMessages } from '../i18n/loadLocale'
 
 export function useLanguage() {
-  const { locale } = useI18n()
+  // Usar siempre el contexto global de i18n
+  const { locale } = useI18n({ useScope: 'global' })
   
   // Idiomas disponibles
   const availableLanguages = [
