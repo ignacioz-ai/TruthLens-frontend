@@ -29,6 +29,8 @@ export async function loadLocaleMessages(locale: string) {
     console.log('[i18n] Mensajes cargados para', locale, messages);
 
     i18n.global.setLocaleMessage(locale, messages);
+    // Forzar refresco del idioma
+    i18n.global.locale.value = '';
     i18n.global.locale.value = locale;
     console.log('[i18n] Idioma activo ahora:', i18n.global.locale.value);
     console.log('[i18n] Locales disponibles:', i18n.global.availableLocales.value);
