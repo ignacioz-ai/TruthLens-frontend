@@ -228,8 +228,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-const { locale } = useI18n();
-console.log('Idioma activo:', locale.value);
+const { t, locale, availableLocales } = useI18n({ useScope: 'global' });
+console.log('[i18n][LandingView] locale:', locale.value, 'locales disponibles:', availableLocales, "t('landing.hero.title'):", t('landing.hero.title'));
 import { RouterLink } from 'vue-router';
 import { FRONTEND_URL } from '../config/api';
 import { getBoltUrl } from '../config/environment';

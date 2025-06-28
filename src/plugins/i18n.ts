@@ -2,7 +2,7 @@ import { createI18n } from 'vue-i18n'
 
 
 export const i18n = createI18n({
-  legacy: false,
+  legacy: true,
   locale: 'en', // Default language
   fallbackLocale: 'en',
   globalInjection: true,
