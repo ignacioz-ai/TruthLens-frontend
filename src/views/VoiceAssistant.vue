@@ -1,30 +1,27 @@
 <template>
   <!-- Main page wrapper for the Voice Assistant -->
   <div class="voice-assistant-page">
-  
     <!-- Central container for the voice assistant UI -->
     <div class="voice-assistant-container">
       <!-- Title and subtitle with entrance animation -->
       <transition name="fade-slide-down" appear>
         <div class="voice-assistant-title">
-          <h1 class="main-title">{{ $t('voiceAssistant.hero.title') }}</h1>
-          <p class="subtitle">{{ $t('voiceAssistant.hero.subtitle') }} <span class="gradient-text">Clara</span>. {{
-            $t('voiceAssistant.hero.description') }}</p>
+          <h1 class="main-title">TruthLens Voice Agent</h1>
+          <p class="subtitle">Chat with <span class="gradient-text">Clara</span>. Your real-time multilingual AI from TruthLens.</p>
         </div>
       </transition>
-
+      
       <!-- Mobile permission message -->
       <transition name="fade-scale" appear>
         <div v-if="!hasPermissions && isMobileAudio" class="permission-message">
           <div class="permission-card">
             <svg class="permission-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
             </svg>
-            <h3>{{ $t('voiceAssistant.permissions.title') }}</h3>
-            <p>{{ $t('voiceAssistant.permissions.description') }}</p>
+            <h3>Microphone Access Required</h3>
+            <p>To chat with Clara, please allow microphone access when prompted.</p>
             <button @click="requestPermissions" class="permission-button">
-              {{ $t('voiceAssistant.permissions.enableMicrophone') }}
+              Enable Microphone
             </button>
           </div>
         </div>
@@ -32,48 +29,54 @@
 
       <!-- Voice Assistant Main Button with animated disc background -->
       <transition name="scale-fade" appear>
-        <div class="voice-button-wrapper"
-          :class="{ 'active': isActive, 'listening': isListening, 'speaking': isSpeaking }">
+        <div class="voice-button-wrapper" :class="{ 'active': isActive, 'listening': isListening, 'speaking': isSpeaking }">
           <!-- Label Call Clara sobre el botón, solo cuando está inactiva -->
-          <div v-if="!isListening && !isSpeaking && !isConnecting && !isAlwaysListening && hasPermissions"
-            class="call-clara-label">
+          <div v-if="!isListening && !isSpeaking && !isConnecting && !isAlwaysListening && hasPermissions" class="call-clara-label">
             <svg width="16" height="16" viewBox="0 0 22 22" fill="none" style="margin-right:6px;">
-              <rect x="3" y="10" width="2" height="4" rx="1" fill="#60a5fa" />
-              <rect x="7" y="7" width="2" height="10" rx="1" fill="#60a5fa" />
-              <rect x="11" y="5" width="2" height="14" rx="1" fill="#60a5fa" />
-              <rect x="15" y="8" width="2" height="8" rx="1" fill="#60a5fa" />
+              <rect x="3" y="10" width="2" height="4" rx="1" fill="#60a5fa"/>
+              <rect x="7" y="7" width="2" height="10" rx="1" fill="#60a5fa"/>
+              <rect x="11" y="5" width="2" height="14" rx="1" fill="#60a5fa"/>
+              <rect x="15" y="8" width="2" height="8" rx="1" fill="#60a5fa"/>
             </svg>
-            {{ isMobileAudio ? $t('voiceAssistant.buttons.tapToTalk') : $t('voiceAssistant.buttons.callClara') }}
+            {{ isMobileAudio ? 'Tap to Talk' : 'Call Clara' }}
           </div>
-
+          
           <!-- Animated Background Disc -->
           <div class="voice-disc">
             <div :class="['disc-gradient', (isListening || isSpeaking) ? 'disc-gradient-bright' : '']"></div>
             <div class="disc-shine"></div>
           </div>
-
+          
           <!-- Main Button for voice interaction -->
-          <button @click="toggleVoiceChat" @touchstart="handleTouchStart" @touchend="handleTouchEnd"
-            @mousedown="handleMouseDown" @mouseup="handleMouseUp" @mouseleave="handleMouseUp"
-            :disabled="isConnecting || !hasPermissions" class="voice-button" :class="{
+          <button
+            @click="toggleVoiceChat"
+            @touchstart="handleTouchStart"
+            @touchend="handleTouchEnd"
+            @mousedown="handleMouseDown"
+            @mouseup="handleMouseUp"
+            @mouseleave="handleMouseUp"
+            :disabled="isConnecting || !hasPermissions"
+            class="voice-button"
+            :class="{
               'listening': isListening,
               'speaking': isSpeaking,
               'connecting': isConnecting,
               'error': hasError,
               'disabled': !hasPermissions
-            }" :aria-label="getButtonLabel()">
+            }"
+            :aria-label="getButtonLabel()"
+          >
             <span :class="['liquid-blob', (isListening || isSpeaking) ? 'liquid-blob-active' : '']"></span>
           </button>
         </div>
       </transition>
-
+      
       <!-- State label for listening/speaking -->
       <transition name="state-fade-slide" mode="out-in">
         <div v-if="isListening || isSpeaking || isConnecting" class="voice-state-label" key="state-label">
-          <span v-if="isConnecting">{{ $t('voiceAssistant.states.connecting') }}</span>
-          <span v-else-if="isListening">{{ $t('voiceAssistant.states.listening') }}</span>
-          <span v-else-if="isSpeaking">{{ isMobileAudio ? $t('voiceAssistant.states.claraResponding') :
-            $t('voiceAssistant.states.responding') }}</span>
+          <span v-if="isConnecting">Connecting...</span>
+          <span v-else-if="isListening">{{ isMobileAudio ? 'Listening...' : 'Listening' }}</span>
+          <span v-else-if="isSpeaking">{{ isMobileAudio ? 'Clara is responding...' : 'Responding' }}</span>
         </div>
       </transition>
 
@@ -81,44 +84,37 @@
       <transition name="fade-scale">
         <div v-if="hasError" class="error-message">
           <p>{{ statusMessage }}</p>
-          <button @click="resetError" class="error-button">{{ $t('voiceAssistant.buttons.tryAgain') }}</button>
+          <button @click="resetError" class="error-button">Try Again</button>
         </div>
       </transition>
 
       <!-- Mobile instructions -->
       <transition name="fade-scale" appear>
         <div v-if="isMobileAudio && hasPermissions" class="mobile-instructions">
-          <p>{{ isAlwaysListening ? $t('voiceAssistant.instructions.tapToEnd') :
-            $t('voiceAssistant.instructions.tapAndHold') }}</p>
+          <p>{{ isAlwaysListening ? 'Tap again to end conversation' : 'Tap and hold to speak with Clara' }}</p>
         </div>
       </transition>
     </div>
-
+    
     <!-- Tarjeta informativa de Clara -->
     <div class="mt-8 sm:mt-12 max-w-2xl mx-auto px-4 sm:px-0">
-      <div
-        class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 rounded-2xl shadow-xl border border-cyan-400/20 p-6 sm:p-8 mb-8 flex flex-col items-start">
+      <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 rounded-2xl shadow-xl border border-cyan-400/20 p-6 sm:p-8 mb-8 flex flex-col items-start">
         <div class="flex items-center mb-4">
-          <!-- Clara avatar icon -->
-          <span class="inline-block relative w-8 h-8 align-middle mr-4" style="vertical-align:middle;">
-            <span
-              style="width:32px;height:32px;display:block;position:relative;z-index:1;border-radius:50%;animation:rotate 6s linear infinite;background:conic-gradient(from 0deg,#1e40af 0deg,#3b82f6 60deg,#06b6d4 120deg,#0ea5e9 180deg,#3b82f6 240deg,#1e40af 300deg,#1e40af 360deg);"></span>
-            <span
-              style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;background:rgba(16,22,36,0.92);border-radius:50%;z-index:2;box-shadow:0 2px 8px 0 rgba(0,0,0,0.18);"></span>
-          </span>
-          <h2 class="text-xl sm:text-2xl font-bold text-white">{{ $t('voiceChat.info.title') }}</h2>
+          <div class="w-8 h-8 mr-3 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg">
+            <div class="w-5 h-5 rounded-full bg-slate-900"></div>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Clara, your critical guide</h2>
         </div>
-        <p class="text-slate-200 mb-3 text-base">{{ $t('voiceChat.info.description') }}</p>
-        <p class="text-slate-200 mb-3 text-base">{{ $t('voiceChat.info.sheDoesntPerform') }}</p>
+        <p class="text-slate-200 mb-3 text-base">Clara is the voice of TruthLens — your companion for exploring the platform and making sense of what you see.</p>
         <ul class="list-disc list-inside text-slate-300 mb-3 text-base space-y-1">
-          <li>{{ $t('voiceChat.info.features.understandBias') }}</li>
-          <li>{{ $t('voiceChat.info.features.reflectOnResults') }}</li>
-          <li>{{ $t('voiceChat.info.features.navigateTools') }}</li>
+          <li>Understand how bias, emotional tone, and manipulation appear in language</li>
+          <li>Uncover the 'why' behind each analysis tool and its findings</li>
+          <li>Develop a more critical perspective on media and language</li>
         </ul>
-        <p class="text-slate-200 text-base">{{ $t('voiceChat.info.claraIsntHere') }}</p>
+        <p class="text-slate-200 text-base font-semibold">Clara's goal is to help you think for yourself.</p>
       </div>
     </div>
-
+    
     <!-- ChatBot assistant at the bottom -->
     <ChatBot v-if="!isMobileDevice" />
   </div>
@@ -209,7 +205,7 @@ const initializeVoice = async (): Promise<boolean> => {
         isSpeaking.value = false;
         isConnecting.value = false;
         hasError.value = false;
-
+        
         // Play connection sound
         if (isMobileAudio) {
           playAudio(listenStartSound, { volume: 0.3 });
@@ -288,7 +284,7 @@ const handleTouchStart = (e: TouchEvent) => {
     requestPermissions();
     return;
   }
-
+  
   touchStartTime = Date.now();
   if (!isAlwaysListening.value && !isConnecting.value) {
     isActive.value = true;
@@ -307,9 +303,9 @@ const handleTouchEnd = async (e: TouchEvent) => {
     clearTimeout(touchTimer);
     touchTimer = null;
   }
-
+  
   const touchDuration = Date.now() - touchStartTime;
-
+  
   // If it was a quick tap and we're in always listening mode, toggle off
   if (touchDuration < 200 && isAlwaysListening.value && conversation) {
     await conversation.endSession();
@@ -347,7 +343,7 @@ const handleError = (message: string) => {
   isSpeaking.value = false;
   isAlwaysListening.value = false;
   isActive.value = false;
-
+  
   if (conversation) {
     conversation.endSession();
     conversation = null;
@@ -364,7 +360,7 @@ onMounted(async () => {
   try {
     // Resume audio context for mobile
     await resumeAudioContext();
-
+    
     // Check microphone permissions with mobile optimization
     const audioConstraints = getMobileAudioConstraints();
     const stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
@@ -380,7 +376,7 @@ onUnmounted(async () => {
   if (touchTimer) {
     clearTimeout(touchTimer);
   }
-
+  
   if (conversation) {
     await conversation.endSession();
     conversation = null;
@@ -446,14 +442,16 @@ watch(isSpeaking, (newVal, oldVal) => {
 .disc-gradient {
   position: absolute;
   inset: 0;
-  background: conic-gradient(from 0deg,
-      #1e40af 0deg,
-      #3b82f6 60deg,
-      #06b6d4 120deg,
-      #0ea5e9 180deg,
-      #3b82f6 240deg,
-      #1e40af 300deg,
-      #1e40af 360deg);
+  background: conic-gradient(
+    from 0deg,
+    #1e40af 0deg,
+    #3b82f6 60deg,
+    #06b6d4 120deg,
+    #0ea5e9 180deg,
+    #3b82f6 240deg,
+    #1e40af 300deg,
+    #1e40af 360deg
+  );
   border-radius: 50%;
   animation: rotate 8s linear infinite;
   transition: animation-duration 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s, background 0.5s;
@@ -461,24 +459,28 @@ watch(isSpeaking, (newVal, oldVal) => {
 
 .disc-gradient-bright {
   filter: brightness(1.25) saturate(1.4) drop-shadow(0 0 32px #38bdf8cc);
-  background: conic-gradient(from 0deg,
-      #38bdf8 0deg,
-      #3b82f6 60deg,
-      #06b6d4 120deg,
-      #0ea5e9 180deg,
-      #3b82f6 240deg,
-      #38bdf8 300deg,
-      #38bdf8 360deg);
+  background: conic-gradient(
+    from 0deg,
+    #38bdf8 0deg,
+    #3b82f6 60deg,
+    #06b6d4 120deg,
+    #0ea5e9 180deg,
+    #3b82f6 240deg,
+    #38bdf8 300deg,
+    #38bdf8 360deg
+  );
   animation-duration: 3s;
 }
 
 .disc-shine {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 30% 30%,
-      rgba(255, 255, 255, 0.3) 0%,
-      rgba(255, 255, 255, 0.1) 30%,
-      transparent 70%);
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.1) 30%,
+    transparent 70%
+  );
   border-radius: 50%;
 }
 
@@ -500,7 +502,7 @@ watch(isSpeaking, (newVal, oldVal) => {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
-  box-shadow:
+  box-shadow: 
     0 0 60px rgba(59, 130, 246, 0.2),
     inset 0 4px 8px rgba(255, 255, 255, 0.1);
   font-size: 2.2rem;
@@ -521,13 +523,13 @@ watch(isSpeaking, (newVal, oldVal) => {
   background: #101624;
   border-radius: 50%;
   z-index: 11;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.1);
 }
 
 .voice-button:hover:not(:disabled) {
   transform: scale(1.07);
   border-color: rgba(59, 130, 246, 0.5);
-  box-shadow:
+  box-shadow: 
     0 0 80px rgba(59, 130, 246, 0.3),
     inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
@@ -545,28 +547,28 @@ watch(isSpeaking, (newVal, oldVal) => {
 
 .voice-button.listening {
   border-color: rgba(34, 197, 94, 0.6);
-  box-shadow:
+  box-shadow: 
     0 0 80px rgba(34, 197, 94, 0.3),
     inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
 
 .voice-button.speaking {
   border-color: rgba(249, 115, 22, 0.6);
-  box-shadow:
+  box-shadow: 
     0 0 80px rgba(249, 115, 22, 0.3),
     inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
 
 .voice-button.connecting {
   border-color: rgba(168, 85, 247, 0.6);
-  box-shadow:
+  box-shadow: 
     0 0 80px rgba(168, 85, 247, 0.3),
     inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
 
 .voice-button.error {
   border-color: rgba(239, 68, 68, 0.6);
-  box-shadow:
+  box-shadow: 
     0 0 80px rgba(239, 68, 68, 0.3),
     inset 0 4px 8px rgba(255, 255, 255, 0.15);
 }
@@ -612,19 +614,16 @@ watch(isSpeaking, (newVal, oldVal) => {
 }
 
 /* Transitions */
-.fade-scale-enter-active,
-.fade-scale-leave-active {
+.fade-scale-enter-active, .fade-scale-leave-active {
   transition: opacity 0.3s, transform 0.3s;
 }
 
-.fade-scale-enter-from,
-.fade-scale-leave-to {
+.fade-scale-enter-from, .fade-scale-leave-to {
   opacity: 0;
   transform: scale(0.92);
 }
 
-.fade-scale-leave-from,
-.fade-scale-enter-to {
+.fade-scale-leave-from, .fade-scale-enter-to {
   opacity: 1;
   transform: scale(1);
 }
@@ -658,12 +657,10 @@ watch(isSpeaking, (newVal, oldVal) => {
     opacity: 0.95;
     transform: scale(1);
   }
-
   40% {
     opacity: 1;
     transform: scale(5);
   }
-
   100% {
     opacity: 1;
     transform: scale(2.7);
@@ -676,37 +673,31 @@ watch(isSpeaking, (newVal, oldVal) => {
     transform: translate(-50%, -50%) scale(1) rotate(0deg);
     filter: blur(6px) brightness(1.2);
   }
-
   15% {
     border-radius: 60% 40% 55% 45% / 45% 60% 40% 55%;
     transform: translate(-52%, -48%) scale(1.08, 0.95) rotate(12deg);
     filter: blur(7px) brightness(1.22);
   }
-
   32% {
     border-radius: 50% 60% 40% 60% / 60% 40% 60% 40%;
     transform: translate(-48%, -52%) scale(1.13, 0.92) rotate(-7deg);
     filter: blur(8px) brightness(1.25);
   }
-
   47% {
     border-radius: 55% 45% 60% 40% / 40% 55% 45% 60%;
     transform: translate(-53%, -47%) scale(0.97, 1.18) rotate(18deg);
     filter: blur(7px) brightness(1.18);
   }
-
   63% {
     border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
     transform: translate(-51%, -49%) scale(1.05, 1.07) rotate(-14deg);
     filter: blur(7px) brightness(1.21);
   }
-
   78% {
     border-radius: 45% 55% 60% 40% / 60% 40% 55% 45%;
     transform: translate(-49%, -51%) scale(1.11, 0.93) rotate(9deg);
     filter: blur(8px) brightness(1.23);
   }
-
   100% {
     border-radius: 44% 56% 48% 52% / 55% 45% 55% 45%;
     transform: translate(-50%, -50%) scale(1) rotate(0deg);
@@ -725,8 +716,7 @@ watch(isSpeaking, (newVal, oldVal) => {
 }
 
 /* State Label Animations */
-.state-fade-slide-enter-active,
-.state-fade-slide-leave-active {
+.state-fade-slide-enter-active, .state-fade-slide-leave-active {
   transition: opacity 0.35s, transform 0.35s;
 }
 
@@ -740,20 +730,14 @@ watch(isSpeaking, (newVal, oldVal) => {
   transform: translateY(-18px);
 }
 
-.state-fade-slide-enter-to,
-.state-fade-slide-leave-from {
+.state-fade-slide-enter-to, .state-fade-slide-leave-from {
   opacity: 1;
   transform: translateY(0);
 }
 
 @keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* Active state animations */
@@ -771,7 +755,6 @@ watch(isSpeaking, (newVal, oldVal) => {
     opacity: 0;
     transform: translateY(-30px);
   }
-
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -787,7 +770,6 @@ watch(isSpeaking, (newVal, oldVal) => {
     opacity: 0;
     transform: scale(0.8);
   }
-
   100% {
     opacity: 1;
     transform: scale(1);
@@ -802,7 +784,7 @@ watch(isSpeaking, (newVal, oldVal) => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(15, 23, 42, 0.92);
+  background: rgba(15,23,42,0.92);
   color: #fff;
   font-weight: 500;
   font-size: 0.93rem;
@@ -828,36 +810,36 @@ watch(isSpeaking, (newVal, oldVal) => {
     width: 280px;
     height: 280px;
   }
-
+  
   .voice-button {
     width: 200px !important;
     height: 200px !important;
   }
-
+  
   .voice-button::before {
     width: 90px !important;
     height: 90px !important;
   }
-
+  
   .liquid-blob {
     width: 100px;
     height: 100px;
   }
-
+  
   .liquid-blob-active {
     transform: scale(2.5);
   }
-
+  
   .subtitle {
     font-size: 0.9rem;
   }
-
+  
   /* Improve touch targets for mobile */
   .voice-button {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
-
+  
   /* Optimize audio visual feedback */
   .disc-gradient-bright {
     filter: brightness(1.4) saturate(1.6) drop-shadow(0 0 40px #38bdf8cc);
@@ -870,7 +852,7 @@ watch(isSpeaking, (newVal, oldVal) => {
     -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;
   }
-
+  
   /* Ensure audio plays on iOS */
   audio {
     -webkit-playsinline: true;

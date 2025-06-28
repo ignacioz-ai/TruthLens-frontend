@@ -48,24 +48,6 @@
     position: relative;
     z-index: 1;
   }
-
-  /* RTL Support */
-  [dir="rtl"] {
-    text-align: right;
-  }
-
-  [dir="rtl"] .language-dropdown {
-    right: auto;
-    left: 0;
-  }
-
-  [dir="rtl"] .language-option {
-    text-align: right;
-  }
-
-  [dir="rtl"] .language-button {
-    flex-direction: row-reverse;
-  }
 }
 
 @layer components {

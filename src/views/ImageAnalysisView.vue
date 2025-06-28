@@ -87,11 +87,11 @@ const getVerdictColorClass = (verdict: string) => {
       <div class="text-center mb-6">
         <h1 class="font-display text-4xl sm:text-5xl font-bold mb-2 relative animate-fade-in">
           <span class="bg-gradient-to-r from-cyan-300 via-blue-500 to-cyan-300 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
-            {{ $t('imageAnalysis.hero.title') }}
+            Image Analysis
           </span>
         </h1>
         <p class="text-base sm:text-lg text-blue-200/80 font-display tracking-wide mb-6 animate-fade-in">
-          {{ $t('imageAnalysis.hero.subtitle') }}
+          Upload an image to analyze its authenticity using advanced AI techniques.
         </p>
       </div>
       <div class="w-full mx-auto mb-8 animate-fadeInUp">
@@ -115,9 +115,9 @@ const getVerdictColorClass = (verdict: string) => {
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
             </svg>
             <p class="mb-2 text-base text-slate-400 group-hover:text-blue-200 transition-colors">
-              <span class="font-semibold">{{ $t('imageAnalysis.upload.clickToUpload') }}</span> {{ $t('imageAnalysis.upload.orDragAndDrop') }}
+              <span class="font-semibold">Click to upload</span> or drag and drop
             </p>
-            <p class="text-xs text-slate-500">{{ $t('imageAnalysis.upload.fileTypes') }}</p>
+            <p class="text-xs text-slate-500">PNG, JPG or JPEG (MAX. 10MB)</p>
           </div>
           <input ref="fileInputRef" id="image-upload" type="file" class="hidden" accept="image/*" @change="handleFileUpload" />
         </div>
@@ -129,7 +129,7 @@ const getVerdictColorClass = (verdict: string) => {
       <transition name="fade-scale" appear>
         <div v-if="analysisResults" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-2 animate-fadeInUp">
           <Card class="col-span-1 md:col-span-2 mb-2 animate-fade-in">
-            <h3 class="text-lg sm:text-xl font-semibold text-blue-200 mb-2">{{ $t('imageAnalysis.results.aiProbability') }}</h3>
+            <h3 class="text-lg sm:text-xl font-semibold text-blue-200 mb-2">AI Probability</h3>
             <div class="w-full bg-[#16243a] rounded-full h-4 flex items-center relative overflow-hidden">
               <div
                 class="h-4 rounded-full transition-all duration-700 ease-in-out shadow-md bg-green-400"
@@ -140,10 +140,10 @@ const getVerdictColorClass = (verdict: string) => {
                 v-if="analysisResults.ai_probability >= 95"
               >!</span>
             </div>
-            <p class="mt-2 text-sm text-slate-400">{{ $t('imageAnalysis.results.probabilityText', { probability: (analysisResults.ai_probability).toFixed(1) }) }}</p>
+            <p class="mt-2 text-sm text-slate-400">{{ (analysisResults.ai_probability).toFixed(1) }}% probability of being AI-generated</p>
           </Card>
           <Card class="animate-fade-in">
-            <h3 class="text-base sm:text-lg font-semibold text-blue-200 mb-2">{{ $t('imageAnalysis.results.visualClues') }}</h3>
+            <h3 class="text-base sm:text-lg font-semibold text-blue-200 mb-2">Visual Clues</h3>
             <ul class="space-y-2">
               <li v-for="(clue, index) in analysisResults.visual_clues" :key="index" class="flex items-start gap-2 text-slate-300 text-sm sm:text-base">
                 <span class="w-2 h-2 rounded-full bg-blue-400 mt-1.5 sm:mt-2"></span>
@@ -152,7 +152,7 @@ const getVerdictColorClass = (verdict: string) => {
             </ul>
           </Card>
           <Card class="animate-fade-in">
-            <h3 class="text-base sm:text-lg font-semibold text-blue-200 mb-2">{{ $t('imageAnalysis.results.spectralAnalysis') }}</h3>
+            <h3 class="text-base sm:text-lg font-semibold text-blue-200 mb-2">Spectral Analysis</h3>
             <ul class="space-y-2">
               <li v-for="(clue, index) in analysisResults.spectral_clues" :key="index" class="flex items-start gap-2 text-slate-300 text-sm sm:text-base">
                 <span class="w-2 h-2 rounded-full bg-blue-400 mt-1.5 sm:mt-2"></span>
@@ -161,7 +161,7 @@ const getVerdictColorClass = (verdict: string) => {
             </ul>
           </Card>
           <Card class="animate-fade-in">
-            <h3 class="text-base sm:text-lg font-semibold text-blue-200 mb-2">{{ $t('imageAnalysis.results.metadataAnalysis') }}</h3>
+            <h3 class="text-base sm:text-lg font-semibold text-blue-200 mb-2">Metadata Analysis</h3>
             <ul class="space-y-2">
               <li v-for="(clue, index) in analysisResults.metadata_clues" :key="index" class="flex items-start gap-2 text-slate-300 text-sm sm:text-base">
                 <span class="w-2 h-2 rounded-full bg-blue-400 mt-1.5 sm:mt-2"></span>
@@ -170,7 +170,7 @@ const getVerdictColorClass = (verdict: string) => {
             </ul>
           </Card>
           <Card class="flex flex-col justify-between animate-fade-in">
-            <h3 class="text-base sm:text-lg font-semibold text-blue-200 mb-2">{{ $t('imageAnalysis.results.finalVerdict') }}</h3>
+            <h3 class="text-base sm:text-lg font-semibold text-blue-200 mb-2">Final Verdict</h3>
             <p class="text-base font-medium mb-2" :class="getVerdictColorClass(analysisResults.verdict)">{{ analysisResults.verdict }}</p>
             <p class="text-slate-300 mb-2 text-sm sm:text-base">{{ analysisResults.justification }}</p>
             <p class="text-slate-300 text-sm sm:text-base">{{ analysisResults.recommendation }}</p>
@@ -184,15 +184,15 @@ const getVerdictColorClass = (verdict: string) => {
           <svg class="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <h2 class="text-xl sm:text-2xl font-bold text-white">{{ $t('imageAnalysis.info.title') }}</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Image Analysis</h2>
         </div>
-        <p class="text-slate-200 mb-3 text-base">{{ $t('imageAnalysis.info.description') }}</p>
+        <p class="text-slate-200 mb-3 text-base">Verify if an image is real or artificially generated. Upload any photo or screenshot and TruthLens will evaluate:</p>
         <ul class="list-disc list-inside text-slate-300 mb-3 text-base">
-          <li>{{ $t('imageAnalysis.info.features.aiGeneratedImagery') }}</li>
-          <li>{{ $t('imageAnalysis.info.features.digitalTampering') }}</li>
-          <li>{{ $t('imageAnalysis.info.features.metadataIntegrity') }}</li>
+          <li>AI-generated imagery and deepfake probability</li>
+          <li>Digital tampering and manipulation clues</li>
+          <li>Metadata integrity and visual anomalies</li>
         </ul>
-        <p class="text-slate-200 text-base">{{ $t('imageAnalysis.info.toolProvides') }}</p>
+        <p class="text-slate-200 text-base">The tool provides a confidence score and a transparent breakdown of authenticity risks.</p>
       </div>
     </div>
     
