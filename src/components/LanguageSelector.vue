@@ -38,8 +38,8 @@ const { availableLanguages, currentLanguage, changeLanguage } = useLanguage()
 const isOpen = ref(false)
 const selectorRef = ref<HTMLElement | null>(null)
 
-const selectLanguage = (languageCode: string) => {
-  changeLanguage(languageCode)
+const selectLanguage = async (languageCode: string) => {
+  await changeLanguage(languageCode)
   isOpen.value = false
 }
 

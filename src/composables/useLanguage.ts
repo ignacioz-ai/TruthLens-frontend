@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { loadLocaleMessages } from '../i18n/loadLocale'
 
 export function useLanguage() {
   const { locale } = useI18n()
@@ -23,9 +24,9 @@ export function useLanguage() {
     return availableLanguages.find(lang => lang.code === locale.value) || availableLanguages[0]
   })
 
-  // Cambiar idioma
-  const changeLanguage = (languageCode: string) => {
-    locale.value = languageCode
+  // Cambiar idioma con carga dinámica
+  const changeLanguage = async (languageCode: string) => {
+    await loadLocaleMessages(languageCode)
     localStorage.setItem('preferred-language', languageCode)
     
     // Para idiomas RTL

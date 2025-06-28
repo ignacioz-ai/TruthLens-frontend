@@ -528,8 +528,6 @@
     "forbidden": "Запрещено",
     "badRequest": "Неверный запрос",
     "internalError": "Внутренняя ошибка сервера",
-    "serviceUnavailable": "Сервис недоступен",
-    "gatewayTimeout": "Тайм-аут шлюза",
     "tooManyRequests": "Слишком много запросов",
     "conflict": "Конфликт",
     "gone": "Недоступно",
