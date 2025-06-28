@@ -28,8 +28,8 @@ const messages = {
 console.log('Mensajes ES:', es)
 
 export const i18n = createI18n({
-  legacy: false, // Composition API
-  locale: 'es', // Main language (forzado a español)
+  legacy: true, // Cambiado a modo legacy
+  locale: 'en', // Main language (rollback a inglés)
   fallbackLocale: 'en', // Fallback language
   messages,
   globalInjection: true, // Inject $t globally
