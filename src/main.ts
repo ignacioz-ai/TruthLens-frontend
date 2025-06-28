@@ -3,12 +3,17 @@ import './style.css'
 import App from './App.vue'
 import router from './router'
 import i18n from './plugins/i18n'
+import { loadLocaleMessages } from './i18n/loadLocale'
 
-const app = createApp(App)
+async function bootstrap() {
+  // Load preferred or default language before mounting the app
+  const savedLang = localStorage.getItem('preferred-language') || 'en'
+  await loadLocaleMessages(savedLang)
 
-// Ensure router is used correctly
-// Temporary type assertion to resolve TypeScript error
-app.use(router as any)
-app.use(i18n)
+  const app = createApp(App)
+  app.use(router as any)
+  app.use(i18n)
+  app.mount('#app')
+}
 
-app.mount('#app')
+bootstrap()
