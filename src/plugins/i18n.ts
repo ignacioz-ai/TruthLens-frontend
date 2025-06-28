@@ -25,6 +25,8 @@ const messages = {
   hi
 }
 
+console.log('Mensajes ES:', es)
+
 export const i18n = createI18n({
   legacy: false, // Composition API
   locale: 'en', // Main language
