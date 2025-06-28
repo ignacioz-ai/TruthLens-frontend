@@ -29,7 +29,7 @@ console.log('Mensajes ES:', es)
 
 export const i18n = createI18n({
   legacy: false, // Composition API
-  locale: 'en', // Main language
+  locale: 'es', // Main language (forzado a español)
   fallbackLocale: 'en', // Fallback language
   messages,
   globalInjection: true, // Inject $t globally

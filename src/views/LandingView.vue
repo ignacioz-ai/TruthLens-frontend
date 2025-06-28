@@ -227,6 +227,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+const { locale } = useI18n();
+console.log('Idioma activo:', locale.value);
 import { RouterLink } from 'vue-router';
 import { FRONTEND_URL } from '../config/api';
 import { getBoltUrl } from '../config/environment';
