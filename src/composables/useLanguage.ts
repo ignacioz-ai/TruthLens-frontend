@@ -1,6 +1,5 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { loadLocaleMessages } from '../i18n/loadLocale'
 
 export function useLanguage() {
   // Usar siempre el contexto global de i18n
@@ -25,12 +24,10 @@ export function useLanguage() {
     return availableLanguages.find(lang => lang.code === locale.value) || availableLanguages[0]
   })
 
-  // Cambiar idioma con carga dinámica
-  const changeLanguage = async (languageCode: string) => {
-    await loadLocaleMessages(languageCode)
+  // Cambiar idioma
+  const changeLanguage = (languageCode: string) => {
+    locale.value = languageCode as typeof locale.value
     localStorage.setItem('preferred-language', languageCode)
-    
-    // Para idiomas RTL
     document.documentElement.dir = languageCode === 'ar' ? 'rtl' : 'ltr'
     document.documentElement.lang = languageCode
   }
