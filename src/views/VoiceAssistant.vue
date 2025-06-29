@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import listenStartSound from '../assets/sounds/listen_start.wav';
 import speakStartSound from '../assets/sounds/speak_start.mp3';
 import ChatBot from '../components/ChatBot.vue';
@@ -130,7 +130,7 @@ import { useAudioOptimization } from '../composables/useAudioOptimization';
 import { useMobileDetection } from '../composables/useMobileDetection';
 
 // Audio optimization
-const { isMobile: isMobileAudio, getMobileAudioConstraints, playAudio, resumeAudioContext } = useAudioOptimization();
+const { isMobile: isMobileAudio, getMobileAudioConstraints, resumeAudioContext } = useAudioOptimization();
 
 // Mobile detection for ChatBot visibility
 const { isMobile: isMobileDevice } = useMobileDetection();
@@ -150,9 +150,42 @@ const apiKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
 const agentId = import.meta.env.VITE_ELEVENLABS_AGENT_ID;
 let conversation: Conversation | null = null;
 
+// Audio management to prevent duplicates
+let currentAudio: HTMLAudioElement | null = null;
+
 // Touch handling for mobile
 let touchStartTime = 0;
 let touchTimer: number | null = null;
+
+// Improved audio playback to prevent duplicates
+const playAudioSafely = (src: string, options?: { volume?: number }) => {
+  try {
+    // Stop any currently playing audio to prevent overlap
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+    
+    // Create new audio element
+    currentAudio = new Audio(src);
+    const volume = options?.volume ?? (isMobileAudio ? 0.3 : 0.5);
+    currentAudio.volume = volume;
+    
+    // Clean up after playback
+    currentAudio.addEventListener('ended', () => {
+      currentAudio = null;
+    });
+    
+    // Play the audio
+    currentAudio.play().catch(e => {
+      console.warn('Audio play failed:', e);
+      currentAudio = null;
+    });
+  } catch (error) {
+    console.error('Error playing audio:', error);
+    currentAudio = null;
+  }
+};
 
 // Computed properties
 const getButtonLabel = () => {
@@ -208,9 +241,9 @@ const initializeVoice = async (): Promise<boolean> => {
         
         // Play connection sound
         if (isMobileAudio) {
-          playAudio(listenStartSound, { volume: 0.3 });
+          playAudioSafely(listenStartSound, { volume: 0.3 });
         } else {
-          playAudio(listenStartSound, { volume: 0.5 });
+          playAudioSafely(listenStartSound, { volume: 0.5 });
         }
       },
       onDisconnect: () => {
@@ -231,7 +264,7 @@ const initializeVoice = async (): Promise<boolean> => {
           isSpeaking.value = true;
           isListening.value = false;
           // Play speak start sound with mobile optimization
-          playAudio(speakStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
+          playAudioSafely(speakStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
         } else if (mode.mode === 'listening') {
           isSpeaking.value = false;
           if (isAlwaysListening.value) {
@@ -377,23 +410,16 @@ onUnmounted(async () => {
     clearTimeout(touchTimer);
   }
   
+  // Stop any playing audio
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  
   if (conversation) {
     await conversation.endSession();
     conversation = null;
-  }
-});
-
-// Watch to play sounds when state changes
-watch(isListening, (newVal, oldVal) => {
-  console.log('isListening changed:', oldVal, '->', newVal);
-  if (newVal && !oldVal && !isConnecting.value) {
-    playAudio(listenStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
-  }
-});
-
-watch(isSpeaking, (newVal, oldVal) => {
-  if (newVal && !oldVal) {
-    playAudio(speakStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
   }
 });
 </script>
