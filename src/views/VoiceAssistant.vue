@@ -49,7 +49,7 @@
           
           <!-- Main Button for voice interaction -->
           <button
-            @click="toggleVoiceChat"
+            @click="!isMobileAudio && toggleVoiceChat"
             @touchstart="handleTouchStart"
             @touchend="handleTouchEnd"
             @mousedown="handleMouseDown"
@@ -159,36 +159,30 @@ let touchTimer: number | null = null;
 
 // Improved audio playback to prevent duplicates
 const playAudioSafely = (src: string, options?: { volume?: number }) => {
-  console.log('🔊 playAudioSafely called for:', src, 'currentAudio:', !!currentAudio);
-  
   try {
     // Stop any currently playing audio to prevent overlap
     if (currentAudio) {
-      console.log('⏹️ Stopping current audio');
       currentAudio.pause();
       currentAudio.currentTime = 0;
-      currentAudio = null;
     }
     
     // Create new audio element
     currentAudio = new Audio(src);
     const volume = options?.volume ?? (isMobileAudio ? 0.3 : 0.5);
     currentAudio.volume = volume;
-    console.log('🎵 Created new audio element with volume:', volume);
     
     // Clean up after playback
     currentAudio.addEventListener('ended', () => {
-      console.log('✅ Audio playback ended, cleaning up');
       currentAudio = null;
     });
     
     // Play the audio
     currentAudio.play().catch(e => {
-      console.warn('⚠️ Audio play failed:', e);
+      console.warn('Audio play failed:', e);
       currentAudio = null;
     });
   } catch (error) {
-    console.error('❌ Error playing audio:', error);
+    console.error('Error playing audio:', error);
     currentAudio = null;
   }
 };
@@ -220,15 +214,15 @@ const requestPermissions = async (): Promise<boolean> => {
 
 // Initialize ElevenLabs Voice
 const initializeVoice = async (): Promise<boolean> => {
+  console.log('initializeVoice called');
+  
+  // Prevent multiple initializations
+  if (isConnecting.value || conversation) {
+    console.log('Already connecting or conversation exists, ignoring');
+    return true;
+  }
+  
   try {
-    console.log('🔄 initializeVoice called - conversation exists:', !!conversation, 'isConnecting:', isConnecting.value);
-    
-    // Prevent multiple simultaneous initializations
-    if (conversation || isConnecting.value) {
-      console.log('⚠️ Voice already initializing or connected, skipping...');
-      return true;
-    }
-    
     if (!apiKey || !agentId) {
       throw new Error('Missing ElevenLabs API key or Agent ID');
     }
@@ -242,20 +236,19 @@ const initializeVoice = async (): Promise<boolean> => {
     }
 
     isConnecting.value = true;
-    console.log('🚀 Starting ElevenLabs conversation...');
+    console.log('Starting ElevenLabs conversation...');
 
     // Start the conversation with mobile-optimized settings
     conversation = await Conversation.startSession({
       agentId,
       onConnect: () => {
-        console.log('✅ Voice conversation connected');
+        console.log('Voice conversation connected');
         isListening.value = true;
         isSpeaking.value = false;
         isConnecting.value = false;
         hasError.value = false;
         
         // Play connection sound
-        console.log('🔊 Playing connection sound');
         if (isMobileAudio) {
           playAudioSafely(listenStartSound, { volume: 0.3 });
         } else {
@@ -263,7 +256,7 @@ const initializeVoice = async (): Promise<boolean> => {
         }
       },
       onDisconnect: () => {
-        console.log('❌ Voice conversation disconnected');
+        console.log('Voice conversation disconnected');
         isListening.value = false;
         isSpeaking.value = false;
         isConnecting.value = false;
@@ -271,16 +264,15 @@ const initializeVoice = async (): Promise<boolean> => {
         isActive.value = false;
       },
       onError: (message: string) => {
-        console.error('🚨 Voice error:', message);
+        console.error('Voice error:', message);
         handleError(message || 'Error in voice conversation');
       },
       onModeChange: (mode) => {
-        console.log('🔄 Mode changed:', mode.mode);
+        console.log('Mode changed:', mode.mode);
         if (mode.mode === 'speaking') {
           isSpeaking.value = true;
           isListening.value = false;
           // Play speak start sound with mobile optimization
-          console.log('🔊 Playing speak sound');
           playAudioSafely(speakStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
         } else if (mode.mode === 'listening') {
           isSpeaking.value = false;
@@ -294,12 +286,11 @@ const initializeVoice = async (): Promise<boolean> => {
       }
     });
 
-    console.log('✅ Voice initialization completed');
+    console.log('Voice initialization completed');
     return true;
   } catch (error) {
-    console.error('❌ Error initializing voice:', error);
+    console.error('Error initializing voice:', error);
     isConnecting.value = false;
-    conversation = null;
     handleError('Failed to connect to Clara. Please check your internet connection and try again.');
     return false;
   }
@@ -307,32 +298,35 @@ const initializeVoice = async (): Promise<boolean> => {
 
 // Voice chat control
 const toggleVoiceChat = async () => {
-  console.log('🔄 toggleVoiceChat called - hasPermissions:', hasPermissions.value, 'conversation:', !!conversation, 'isAlwaysListening:', isAlwaysListening.value);
+  console.log('toggleVoiceChat called');
   
   if (!hasPermissions.value) {
-    console.log('🔒 Requesting permissions in toggleVoiceChat');
     await requestPermissions();
     return;
   }
 
-  if (!conversation && !isConnecting.value) {
-    console.log('🚀 No conversation exists, initializing...');
+  // Prevent multiple conversations
+  if (isConnecting.value) {
+    console.log('Already connecting, ignoring request');
+    return;
+  }
+
+  if (!conversation) {
+    console.log('No conversation, initializing...');
     const success = await initializeVoice();
     if (!success) return;
-  } else if (conversation) {
-    console.log('✅ Conversation already exists');
   }
 
   if (isAlwaysListening.value && conversation) {
+    console.log('Stopping conversation');
     // Stop the conversation
-    console.log('🛑 Stopping conversation');
     await conversation.endSession();
     conversation = null;
     isAlwaysListening.value = false;
     isActive.value = false;
   } else {
+    console.log('Starting conversation');
     // Start the conversation
-    console.log('🎯 Starting conversation mode');
     isActive.value = true;
     isAlwaysListening.value = true;
   }
@@ -341,59 +335,51 @@ const toggleVoiceChat = async () => {
 // Touch event handlers for mobile
 const handleTouchStart = (e: TouchEvent) => {
   e.preventDefault();
-  console.log('👆 Touch start - hasPermissions:', hasPermissions.value, 'isConnecting:', isConnecting.value, 'conversation:', !!conversation);
+  console.log('Touch start detected');
   
   if (!hasPermissions.value) {
-    console.log('🔒 Requesting permissions...');
     requestPermissions();
     return;
   }
   
   touchStartTime = Date.now();
   if (!isAlwaysListening.value && !isConnecting.value && !conversation) {
-    console.log('🚀 Starting voice session on touch');
+    console.log('Starting voice session on touch');
     isActive.value = true;
     // Start conversation after a short delay to prevent accidental triggers
     touchTimer = window.setTimeout(async () => {
-      console.log('⏰ Touch timer fired - initializing voice');
-      await initializeVoice();
+      if (!conversation && !isConnecting.value) {
+        console.log('Initializing voice from touch timer');
+        await initializeVoice();
+      }
     }, 100);
-  } else {
-    console.log('⚠️ Touch ignored - already active or connecting');
   }
 };
 
 const handleTouchEnd = async (e: TouchEvent) => {
   e.preventDefault();
-  console.log('👆 Touch end - duration:', Date.now() - touchStartTime, 'ms');
+  console.log('Touch end detected');
   
   if (touchTimer) {
     clearTimeout(touchTimer);
     touchTimer = null;
-    console.log('⏰ Touch timer cleared');
   }
   
   const touchDuration = Date.now() - touchStartTime;
+  console.log('Touch duration:', touchDuration, 'ms');
   
-  try {
-    // If it was a quick tap and we're in always listening mode, toggle off
-    if (touchDuration < 200 && isAlwaysListening.value && conversation) {
-      console.log('🛑 Quick tap detected, ending conversation');
-      await conversation.endSession();
-      conversation = null;
-      isAlwaysListening.value = false;
-      isActive.value = false;
-    }
-    // If it was a longer press and we're not in always listening, start conversation
-    else if (touchDuration >= 200 && !isAlwaysListening.value && !conversation) {
-      console.log('🎯 Long press detected, starting conversation via toggleVoiceChat');
-      await toggleVoiceChat();
-    } else {
-      console.log('⚠️ Touch end ignored - conditions not met');
-    }
-  } catch (error) {
-    console.error('❌ Error handling touch end:', error);
-    handleError('Error handling touch interaction. Please try again.');
+  // If it was a quick tap and we're in always listening mode, toggle off
+  if (touchDuration < 200 && isAlwaysListening.value && conversation) {
+    console.log('Quick tap detected, ending conversation');
+    await conversation.endSession();
+    conversation = null;
+    isAlwaysListening.value = false;
+    isActive.value = false;
+  }
+  // If it was a longer press and we're not in always listening, start conversation
+  else if (touchDuration >= 200 && !isAlwaysListening.value && !conversation) {
+    console.log('Long press detected, starting conversation');
+    await toggleVoiceChat();
   }
 };
 
