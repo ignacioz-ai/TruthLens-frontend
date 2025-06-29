@@ -49,7 +49,7 @@
           
           <!-- Main Button for voice interaction -->
           <button
-            @click="!isMobileAudio && toggleVoiceChat"
+            @click="toggleVoiceChat"
             @touchstart="handleTouchStart"
             @touchend="handleTouchEnd"
             @mousedown="handleMouseDown"
@@ -214,14 +214,6 @@ const requestPermissions = async (): Promise<boolean> => {
 
 // Initialize ElevenLabs Voice
 const initializeVoice = async (): Promise<boolean> => {
-  console.log('initializeVoice called');
-  
-  // Prevent multiple initializations
-  if (isConnecting.value || conversation) {
-    console.log('Already connecting or conversation exists, ignoring');
-    return true;
-  }
-  
   try {
     if (!apiKey || !agentId) {
       throw new Error('Missing ElevenLabs API key or Agent ID');
@@ -236,7 +228,6 @@ const initializeVoice = async (): Promise<boolean> => {
     }
 
     isConnecting.value = true;
-    console.log('Starting ElevenLabs conversation...');
 
     // Start the conversation with mobile-optimized settings
     conversation = await Conversation.startSession({
@@ -286,11 +277,9 @@ const initializeVoice = async (): Promise<boolean> => {
       }
     });
 
-    console.log('Voice initialization completed');
     return true;
   } catch (error) {
     console.error('Error initializing voice:', error);
-    isConnecting.value = false;
     handleError('Failed to connect to Clara. Please check your internet connection and try again.');
     return false;
   }
@@ -298,34 +287,23 @@ const initializeVoice = async (): Promise<boolean> => {
 
 // Voice chat control
 const toggleVoiceChat = async () => {
-  console.log('toggleVoiceChat called');
-  
   if (!hasPermissions.value) {
     await requestPermissions();
     return;
   }
 
-  // Prevent multiple conversations
-  if (isConnecting.value) {
-    console.log('Already connecting, ignoring request');
-    return;
-  }
-
   if (!conversation) {
-    console.log('No conversation, initializing...');
     const success = await initializeVoice();
     if (!success) return;
   }
 
   if (isAlwaysListening.value && conversation) {
-    console.log('Stopping conversation');
     // Stop the conversation
     await conversation.endSession();
     conversation = null;
     isAlwaysListening.value = false;
     isActive.value = false;
   } else {
-    console.log('Starting conversation');
     // Start the conversation
     isActive.value = true;
     isAlwaysListening.value = true;
@@ -335,21 +313,17 @@ const toggleVoiceChat = async () => {
 // Touch event handlers for mobile
 const handleTouchStart = (e: TouchEvent) => {
   e.preventDefault();
-  console.log('Touch start detected');
-  
   if (!hasPermissions.value) {
     requestPermissions();
     return;
   }
   
   touchStartTime = Date.now();
-  if (!isAlwaysListening.value && !isConnecting.value && !conversation) {
-    console.log('Starting voice session on touch');
+  if (!isAlwaysListening.value && !isConnecting.value) {
     isActive.value = true;
     // Start conversation after a short delay to prevent accidental triggers
     touchTimer = window.setTimeout(async () => {
-      if (!conversation && !isConnecting.value) {
-        console.log('Initializing voice from touch timer');
+      if (!conversation) {
         await initializeVoice();
       }
     }, 100);
@@ -358,27 +332,22 @@ const handleTouchStart = (e: TouchEvent) => {
 
 const handleTouchEnd = async (e: TouchEvent) => {
   e.preventDefault();
-  console.log('Touch end detected');
-  
   if (touchTimer) {
     clearTimeout(touchTimer);
     touchTimer = null;
   }
   
   const touchDuration = Date.now() - touchStartTime;
-  console.log('Touch duration:', touchDuration, 'ms');
   
   // If it was a quick tap and we're in always listening mode, toggle off
   if (touchDuration < 200 && isAlwaysListening.value && conversation) {
-    console.log('Quick tap detected, ending conversation');
     await conversation.endSession();
     conversation = null;
     isAlwaysListening.value = false;
     isActive.value = false;
   }
   // If it was a longer press and we're not in always listening, start conversation
-  else if (touchDuration >= 200 && !isAlwaysListening.value && !conversation) {
-    console.log('Long press detected, starting conversation');
+  else if (touchDuration >= 200 && !isAlwaysListening.value) {
     await toggleVoiceChat();
   }
 };
