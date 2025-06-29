@@ -160,23 +160,16 @@ let touchTimer: number | null = null;
 // Improved audio playback to prevent duplicates
 const playAudioSafely = (src: string, options?: { volume?: number }) => {
   try {
-    // Stop any currently playing audio to prevent overlap
     if (currentAudio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
     }
-    
-    // Create new audio element
     currentAudio = new Audio(src);
     const volume = options?.volume ?? (isMobileAudio ? 0.3 : 0.5);
     currentAudio.volume = volume;
-    
-    // Clean up after playback
     currentAudio.addEventListener('ended', () => {
       currentAudio = null;
     });
-    
-    // Play the audio
     currentAudio.play().catch(e => {
       console.warn('Audio play failed:', e);
       currentAudio = null;
@@ -184,6 +177,19 @@ const playAudioSafely = (src: string, options?: { volume?: number }) => {
   } catch (error) {
     console.error('Error playing audio:', error);
     currentAudio = null;
+  }
+};
+
+// Safe conversation cleanup to prevent WebSocket errors
+const safeEndConversation = async () => {
+  if (conversation) {
+    try {
+      await conversation.endSession();
+    } catch (error) {
+      console.warn('Error ending conversation (may already be closed):', error);
+    } finally {
+      conversation = null;
+    }
   }
 };
 
@@ -291,20 +297,15 @@ const toggleVoiceChat = async () => {
     await requestPermissions();
     return;
   }
-
   if (!conversation) {
     const success = await initializeVoice();
     if (!success) return;
   }
-
   if (isAlwaysListening.value && conversation) {
-    // Stop the conversation
-    await conversation.endSession();
-    conversation = null;
+    await safeEndConversation();
     isAlwaysListening.value = false;
     isActive.value = false;
   } else {
-    // Start the conversation
     isActive.value = true;
     isAlwaysListening.value = true;
   }
@@ -336,18 +337,12 @@ const handleTouchEnd = async (e: TouchEvent) => {
     clearTimeout(touchTimer);
     touchTimer = null;
   }
-  
   const touchDuration = Date.now() - touchStartTime;
-  
-  // If it was a quick tap and we're in always listening mode, toggle off
   if (touchDuration < 200 && isAlwaysListening.value && conversation) {
-    await conversation.endSession();
-    conversation = null;
+    await safeEndConversation();
     isAlwaysListening.value = false;
     isActive.value = false;
-  }
-  // If it was a longer press and we're not in always listening, start conversation
-  else if (touchDuration >= 200 && !isAlwaysListening.value) {
+  } else if (touchDuration >= 200 && !isAlwaysListening.value) {
     await toggleVoiceChat();
   }
 };
@@ -362,8 +357,7 @@ const handleMouseDown = () => {
 const handleMouseUp = async () => {
   if (!isMobileAudio && !isAlwaysListening.value && !isConnecting.value && isActive.value && conversation) {
     isActive.value = false;
-    await conversation.endSession();
-    conversation = null;
+    await safeEndConversation();
   }
 };
 
@@ -376,10 +370,8 @@ const handleError = (message: string) => {
   isSpeaking.value = false;
   isAlwaysListening.value = false;
   isActive.value = false;
-  
   if (conversation) {
-    conversation.endSession();
-    conversation = null;
+    safeEndConversation();
   }
 };
 
@@ -418,8 +410,7 @@ onUnmounted(async () => {
   }
   
   if (conversation) {
-    await conversation.endSession();
-    conversation = null;
+    await safeEndConversation();
   }
 });
 </script>
