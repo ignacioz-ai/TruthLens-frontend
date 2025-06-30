@@ -107,6 +107,7 @@
         </div>
         <p class="text-slate-200 mb-3 text-base">Clara is the voice of TruthLens — your companion for exploring the platform and making sense of what you see.</p>
         <ul class="list-disc list-inside text-slate-300 mb-3 text-base space-y-1">
+          <li>Ask the assistant to speak in your preferred language</li>
           <li>Understand how bias, emotional tone, and manipulation appear in language</li>
           <li>Uncover the 'why' behind each analysis tool and its findings</li>
           <li>Develop a more critical perspective on media and language</li>
