@@ -285,8 +285,9 @@ const initializeVoice = async (): Promise<boolean> => {
           playAudioSafely(speakStartSound, { volume: isMobileAudio ? 0.3 : 0.5 });
         } else if (mode.mode === 'listening') {
           isSpeaking.value = false;
-          // Show listening state when in listening mode, regardless of isAlwaysListening
-          isListening.value = true;
+          if (isAlwaysListening.value) {
+            isListening.value = true;
+          }
         } else {
           isSpeaking.value = false;
           isListening.value = false;
