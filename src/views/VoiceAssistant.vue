@@ -190,6 +190,12 @@ const safeEndConversation = async () => {
       console.warn('Error ending conversation (may already be closed):', error);
     } finally {
       conversation = null;
+      // Reset all states to prevent conflicts
+      isListening.value = false;
+      isSpeaking.value = false;
+      isConnecting.value = false;
+      isAlwaysListening.value = false;
+      isActive.value = false;
     }
   }
 };
@@ -224,6 +230,11 @@ const initializeVoice = async (): Promise<boolean> => {
   try {
     if (!apiKey || !agentId) {
       throw new Error('Missing ElevenLabs API key or Agent ID');
+    }
+
+    // Prevent multiple initializations
+    if (conversation || isConnecting.value) {
+      return true;
     }
 
     // Resume audio context for mobile
@@ -343,7 +354,7 @@ const handleTouchEnd = async (e: TouchEvent) => {
     await safeEndConversation();
     isAlwaysListening.value = false;
     isActive.value = false;
-  } else if (touchDuration >= 200 && !isAlwaysListening.value) {
+  } else if (touchDuration >= 200 && !isAlwaysListening.value && !conversation && !isConnecting.value) {
     await toggleVoiceChat();
   }
 };
